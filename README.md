@@ -31,11 +31,13 @@ MateGen is currently available only as an online service, utilizing large models
 
 Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for the relevant code for each demonstration.
 
+
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n 
+
 - **Zero-Threshold Convenient Invocation**
 
   ​	Invoke MateGen in Jupyter with just three steps: **Install, Import, and Interact**!
   
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n 
 
 - **Local Massive Text Knowledge Base Q&A**
 
