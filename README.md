@@ -35,17 +35,13 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
 
   ​	Invoke MateGen in Jupyter with just three steps: **Install, Import, and Interact**!
   
-  <div style="text-align: center;">
-    <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240713010710534" style="max-width: 80%; height: auto;" />
-  </div>
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240713010710534" width="800"/>
 
 - **Local Massive Text Knowledge Base Q&A**
 
   ​        With MateGen, achieve high-precision local knowledge base Q&A. MateGen's RAG system supports the retrieval of **up to 1000 texts and 10GB of text content**!
 
-  <div style="text-align: center;">
-    <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240713010710534" style="max-width: 80%; height: auto;" />
-  </div>
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240712212936156" style="zoom:30%;" />
 
 - **Interactive Visualization Drawing**
 
