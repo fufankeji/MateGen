@@ -122,5 +122,4 @@ dmypy.json
 !MANIFEST.in
 
 # 忽略 py 目录，但保留 py 目录中的 .env 文件
-MateGen/
 !MateGen/.env
