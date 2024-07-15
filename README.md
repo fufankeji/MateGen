@@ -119,8 +119,8 @@ More application scenarios for MateGen are coming soon.
   ```
   
   Select the mategen kernel in Jupyter to enter the corresponding virtual environment and run MateGen:
-  
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713012151873" style="zoom:33%;" />
+
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713010710534" width="500"/>
 
 - **MateGen Invocation Method**
 
@@ -154,12 +154,12 @@ More application scenarios for MateGen are coming soon.
 
 ​        MateGen adopts the most advanced threads-runs architecture for better management of user historical message conversations and automatic resolution of various issues encountered during operation. Additionally, it utilizes a client-server separation architecture to ensure maximum stability of the Agent operation while supporting various types of underlying large models. The basic structure of MateGen is as follows:
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001340035.png" alt="image-20240715001340035" style="zoom: 33%;" />
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001340035.png" alt="image-20240713010710534" width="600"/>
+
 
 - MateGen for Intelligent Teaching Assistant
 
 ​        MateGen can be applied to various specific business scenarios. For example, it is currently used in the Jiutian Teacher's team to assist in the teaching of various courses, serving as an intelligent teaching assistant. The basic functional execution process of MateGen as an intelligent teaching assistant is as follows:
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n 
- 
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240713010710534" width="700"/>
  
