@@ -36,43 +36,54 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
 - **Zero-Threshold Convenient Invocation**
 
   ​	Invoke MateGen in Jupyter with just three steps: **Install, Import, and Interact**!
-  
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240713010710534" width="800"/>
-
+  </div>
 - **Local Massive Text Knowledge Base Q&A**
 
   ​        With MateGen, achieve high-precision local knowledge base Q&A. MateGen's RAG system supports the retrieval of **up to 1000 texts and 10GB of text content**!
-
+  
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240713010710534" width="600"/>
-
+  </div>
 - **Interactive Visualization Drawing**
 
   ​        MateGen also possesses visual capabilities and a local code interpreter function, enabling it to **mimic and draw based on user-input images**!
 
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240713010710534" width="600"/>
-
+  </div>
 - **High-Precision NL2SQL**
 
   ​        MateGen supports **fully automated RAG+NL2SQL joint execution**, allowing it to **first understand dataset fields and business information from the knowledge base before writing SQL, and supports automatic review and debugging**, significantly improving SQL accuracy.
 
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712222633885.png" alt="image-20240713010710534" width="600"/>
+  </div>
+  
 - **Automated Machine Learning**
 
   ​        MateGen supports **fully automated RAG+code interpreter** joint execution, enabling it to read the enterprise machine learning code repository before modeling. It allows **one-click invocation of different machine learning modeling strategies through natural language**, creating your machine learning "Jarvis".
 
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712225738564.png" alt="image-20240713010710534" width="600"/>
+  </div>  
 
 - **Advanced Deep Learning Paper Interpretation and Architecture Reproduction**
 
   ​       Leveraging its powerful RAG system and Multi-Function capabilities, MateGen can conduct in-depth **paper tutoring**. It can **assist users in translating and interpreting papers section by section, summarizing core knowledge points, writing hundreds of lines of code to reproduce paper architectures with one click, and directly running and verifying them in the local code environment**!
 
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712231230708.png" alt="image-20240713010710534" width="600"/>
+  </div>
 
 - **Kaggle Competition Coaching**
 
   ​        Utilizing MateGen's networking capability, knowledge base Q&A ability, and NL2Python capability, MateGen can **assist users in participating in Kaggle competitions**. MateGen can automatically **retrieve competition explanations and dataset information based on the user's provided competition problems, scrape high-scoring kernels for the competition, build a competition knowledge base, assist users in competition programming, and automatically submit results to the Kaggle platform. It will then suggest adjustments to the competition strategy based on the submission results, aiming for higher scores!**
 
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713003522041.png" alt="image-20240713010710534" width="600"/>
+  </div>  
 
 More application scenarios for MateGen are coming soon.
 
@@ -120,7 +131,9 @@ More application scenarios for MateGen are coming soon.
   
   Select the mategen kernel in Jupyter to enter the corresponding virtual environment and run MateGen:
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713010710534" width="500"/>
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713010710534" width="400"/>
+  </div>  
 
 - **MateGen Invocation Method**
 
@@ -146,7 +159,9 @@ More application scenarios for MateGen are coming soon.
 
   ​        Free API acquisition 👉 MateGen is currently in the testing phase, with a limited **free quota of 3 billion tokens, available while supplies last. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>**
 
+  <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
+  </div>
 
 ## MateGen Architecture and Application Description
 
@@ -154,12 +169,14 @@ More application scenarios for MateGen are coming soon.
 
 ​        MateGen adopts the most advanced threads-runs architecture for better management of user historical message conversations and automatic resolution of various issues encountered during operation. Additionally, it utilizes a client-server separation architecture to ensure maximum stability of the Agent operation while supporting various types of underlying large models. The basic structure of MateGen is as follows:
 
+<div align="center">
 <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001340035.png" alt="image-20240713010710534" width="600"/>
-
+</div>
 
 - MateGen for Intelligent Teaching Assistant
 
 ​        MateGen can be applied to various specific business scenarios. For example, it is currently used in the Jiutian Teacher's team to assist in the teaching of various courses, serving as an intelligent teaching assistant. The basic functional execution process of MateGen as an intelligent teaching assistant is as follows:
 
+<div align="center">
 <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240713010710534" width="700"/>
- 
+</div>
