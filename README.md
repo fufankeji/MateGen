@@ -37,7 +37,7 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
 
   ​	Invoke MateGen in Jupyter with just three steps: **Install, Import, and Interact**!
   <div align="center">
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240713010710534" width="800"/>
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712185454166.png" alt="image-20240713010710534" width="800"/>
   </div>
 - **Local Massive Text Knowledge Base Q&A**
 
@@ -46,6 +46,7 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
   <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240713010710534" width="600"/>
   </div>
+  
 - **Interactive Visualization Drawing**
 
   ​        MateGen also possesses visual capabilities and a local code interpreter function, enabling it to **mimic and draw based on user-input images**!
@@ -53,6 +54,7 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
   <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240713010710534" width="600"/>
   </div>
+  
 - **High-Precision NL2SQL**
 
   ​        MateGen supports **fully automated RAG+NL2SQL joint execution**, allowing it to **first understand dataset fields and business information from the knowledge base before writing SQL, and supports automatic review and debugging**, significantly improving SQL accuracy.

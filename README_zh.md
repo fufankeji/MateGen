@@ -23,7 +23,9 @@ MateGen基础功能如下：
 
 ​	MateGen目前只上线了在线服务版本，借助在线大模型来完成各项服务，无需本地硬件、无需网络环境要求即可零门槛使用。**调用MateGen需要通过API-KEY进行身份验证**，测试阶段限量**免费开放3亿免费token额度，送完即止，API-KEY领取、加入技术交流群、其他任何问题，<span style="color:red;">扫码添加客服小可爱(微信：littlelion_1215)，回复“MG”详询哦👇</span>**
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:8%;" />
+<div align="center">
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
+</div>
 
 **欢迎课程学员和新老用户多多支持本项目，项目star超过10k即上线开源版及教学教程！**
 
@@ -35,43 +37,57 @@ MateGen基础功能如下：
 
 ​	只需三步即可在Jupyter中调用MateGen：**安装、导入、对话**！
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712185454166.png" alt="image-20240712185454166" style="zoom:25%;" />
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712185454166.png" alt="image-20240713010710534" width="800"/>
+  </div>
 
 - **本地海量文本知识库问答**
 
   ​	借助MateGen，可实现高精度本地知识库问答，MateGen在RAG系统最多**支持1000个文本+10G规模**文本检索！
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240712212936156" style="zoom:30%;" />
-
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240713010710534" width="600"/>
+  </div>
+  
 - **交互式可视化绘图**
 
   ​	MateGen同时具备视觉能力和本地代码解释器功能，因此可以**根据用户输入的图片，模仿绘制**！
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240712193604820" style="zoom:60%;" />
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240713010710534" width="600"/>
+  </div>
 
 - **高精度NL2SQL**
 
   ​	MateGen支持**全自动RAG+NL2SQL联合执行**，因此可以**先从知识库中了解数据集字段信息和业务信息然后再编写SQL，并且支持自动审查与自动debug**，从而大幅提高SQL准确率。
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712222633885.png" alt="image-20240712222633885" style="zoom:30%;" />
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712222633885.png" alt="image-20240713010710534" width="600"/>
+  </div>
 
 - **自动机器学习**
 
   ​	MateGen支持**全自动RAG+代码解释器**联合执行，支持先阅读企业机器学习代码库再进行机器学习建模，通过**自然语言一键调用不同机器学习建模策略**，创建你的机器学习“贾维斯”。
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712225738564.png" alt="image-20240712225738564" style="zoom:40%;" />
-
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712225738564.png" alt="image-20240713010710534" width="600"/>
+  </div>  
+  
 - **前沿深度学习论文解读与架构复现**
 
   ​	基于自身强大的RAG系统以及Multi-Function功能，MateGen能够进行深度**论文辅导**，可以**帮助用户逐段翻译和解读论文—>总结论文核心知识点—>一键编写百行代码代码复现论文架构并在本地代码环境直接运行验证**！
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712231230708.png" alt="image-20240712231230708" style="zoom:40%;" />
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712231230708.png" alt="image-20240713010710534" width="600"/>
+  </div>
 
 - **Kaggle竞赛辅导**
 
   ​	借助MateGen的联网能力+知识库问答能力+NL2Python能力，MateGen还可**辅助用户参与Kaggle竞赛**。MateGen可以根据用户提供的赛题，**自动获取赛题解释与数据集解释信息，自动爬取赛题高分Kernel并组建竞赛知识库，然后辅助用户进行竞赛编程，并自动提交比赛结果至Kaggle平台，最终根据提交结果提示用户调整竞赛策略，从而冲击更高分数！**
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713003522041.png" alt="image-20240713003522041" style="zoom: 50%;" />
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713003522041.png" alt="image-20240713010710534" width="600"/>
+  </div>  
 
 MateGen更多应用场景即将上线。
 
@@ -119,7 +135,9 @@ jupyter lab
 
 然后在Jupyter的Kernel中选择mategen，即可进入到对应虚拟环境运行MateGen：
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713012151873" style="zoom:33%;" />
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713010710534" width="400"/>
+  </div>  
 
 - **MateGen调用方法**
 
@@ -145,7 +163,9 @@ jupyter lab
 
   ​	免费API获取👉MateGen目前正处于测试阶段，限量**免费开放3亿免费token额度，送完即止，API-KEY领取、加入技术交流群、其他任何问题，<span style="color:red;">扫码添加客服小可爱(微信：littlelion_1215)，回复“MG”详询哦👇</span>**
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="100"/>
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
+  </div>
 
 ## MateGen架构与应用说明
 
@@ -153,12 +173,15 @@ jupyter lab
 
   ​	MateGen采用了目前最先进的threads-runs架构，以更好的进行用户历史消息对话管理以及自动修复运行中遇到的各种问题，同时采用了client与server分离架构，以确保最大程度Agent运行稳定性，同时支持多种不同类型底层大模型，MateGen基本结构如下：
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001340035.png" alt="image-20240715001340035" style="zoom: 8%;" />
+<div align="center">
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001340035.png" alt="image-20240713010710534" width="600"/>
+</div>
 
 - MateGen用于智能助教
 
   ​	MateGen同时可适用于多种不同类型具体业务场景，例如MateGen现已用于九天老师团队各门课程辅助教学环节，用于智能助教。MateGen充当智能助教的基本功能执行流程如下：
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />
-
+<div align="center">
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240713010710534" width="700"/>
+</div>
   
