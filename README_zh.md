@@ -1,135 +1,135 @@
-# MateGen: Next-Generation Interactive Intelligent Programming Assistant
+# MateGen：交互式智能编程助手
 
 ![136439902d507ef41f9f746bddd47fc](https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/136439902d507ef41f9f746bddd47fc.jpg)
 
-[**简体中文**](README.zh.md) | [**MateGen使用教程**](docs/MateGen使用教程.ipynb)| [**微信**](docs/wechat.png)
+[**English**](README.md) | [**MateGen使用教程**](docs/MateGen使用教程.ipynb)| [**微信**](docs/wechat.png)
 
-## What is MateGen?
+## MateGen是什么？
 
-**MateGen is an Interactive Intelligent Programming Assistant developed by the Jiutian Teacher's Large Model Research Team. It can be conveniently used within the Jupyter coding environment to assist users in efficiently completing tasks related to intelligent data analysis, machine learning, deep learning, and large model development. MateGen also offers customizable knowledge bases and extendable functionalities to meet the specific needs of users.**
+​	**MateGen是由九天老师大模型教研团队开发的交互式智能编程助手（Interactive Intelligent Programming Assistant），可在Jupyter代码环境中便捷调用，辅助用户高效完成智能数据分析、机器学习、深度学习和大模型开发等工作，并可根据用户实际需求定制知识库和拓展功能。**
 
-The basic features of MateGen are as follows:
+MateGen基础功能如下：
 
-- 🤖 **High Usability, Zero Threshold**: MateGen provides online large model application services for users, enabling one-click installation and initiation of interactions without any hardware or network proxy barriers.
-- 🚀 **Robust High-Precision RAG System**: Synchronize local documents with one click and conduct RAG (Retrieval-Augmented Generation) searches and Q&A. MateGen supports the retrieval of up to 1000 documents and 10GB of document content, providing high-precision Q&A for mainstream document formats such as md, ppt, word, and pdf. It efficiently handles functions like massive document summarization, needle-in-a-haystack content testing, and sentiment analysis Q&A. MateGen can automatically determine whether RAG search is required based on user queries.
-- 🏅 **Local Python Code Interpreter**: Connect to the user's local Python environment to complete programming tasks, including data cleaning, data visualization, machine learning, deep learning, and large model development. It supports learning the code repository before programming, debugging based on actual scenarios, and automatically uploading visualized images to image hosting services.
-- 🚩 **High-Precision NL2SQL Functionality**: Generate SQL queries based on user needs and connect to the local MySQL environment for automatic execution and debugging. It also supports retrieving data dictionaries and enterprise data knowledge bases before writing SQL queries, thereby improving SQL accuracy.
-- 🛩️ **Visual and Networking Capabilities**: Enable MateGen's visual capabilities by inputting image URLs during conversations to recognize image content. MateGen also has networking capabilities to automatically initiate search-based Q&A when encountering questions it cannot answer.
-- 🚅 **Unlimited Conversation Context**: MateGen supports unlimited conversation length, managing the density of unknown information in historical dialogues to save tokens while maintaining an infinite conversation context.
+- 🤖**高易用性，零门槛调用**：MateGen为用户提供在线大模型应用服务，**无需任何硬件或网络代理门槛**，即可一键安装并开启对话；
+- 🚀**强悍的高精度RAG系统**：一键同步本地文档并进行RAG检索问答，**最多支持1000篇文档以及10G文档内容进行检索**，支持md、ppt、word、pdf等主流文档格式高精度问答，能够高效率实现包括海量文档总结、大海捞针内容测试、情感倾向测试问答等功能。MateGen可根据用户问题自动识别是否需要进行RAG检索；
+- 🏅**本地Python代码解释器**：可连接用户本地Python环境完成编程任务，包括数据清洗、数据可视化、机器学习、深度学习、大模型开发等代码工作编写，支持先学习代码库再进行编程、能够根据实际情况debug，支持可视化图片自动上传图床等功能；
+- 🚩**高精度NL2SQL功能**：可根据用户需求编写SQL，并连接本地MySQL环境自动执行，可自动debug，并且支持先检索数据字典、企业数据知识库再进行SQL编写，从而提高SQL编写精度；
+- 🛩️**视觉能力和联网能力**：对话时输入图片网址即可开启MateGen视觉能力对图片内容进行识别，同时MateGen也具备联网能力，当遇到无法回答的问题时，可自动开启搜索问答模式；
+- 🚅**无限对话上下文**：MateGen拥有无限上下文对话长度，MateGen会根据历史对话的未知信息密度进行合理处理，从而在节省token的同时实现无限对话上线文。
 
-Additionally, MateGen boasts **high stability** and **high availability**, supports **Multi Function calling** (one task triggering multiple functions) and **Parallel Function calling** (one function initiating multiple executors), can **automatically decompose complex tasks**, **auto-debug**, and possesses a certain degree of **autonomous awareness**. It can **review its own actions** and deeply **explore user intentions**.
+除此之外，MateGen具备**高稳定性**与**高可用性**，同时支持**Multi Function calling**（一个任务开启多个功能）和**Parallel Function calling**（一个功能开多个执行器），能够**自动分解复杂任务**、**自动Debug**，并且拥有一定程度“**自主意识**”，能够**审查自身行为**并深度**挖掘用户意图**。
 
-## MateGen API-KEY Acquisition
+## MateGen API-KEY获取
 
-MateGen is currently available only as an online service, utilizing large models to deliver various services without the need for local hardware or network environment requirements, enabling zero-threshold usage. **To use MateGen, an API-KEY is required for authentication**. During the testing phase, a limited **3 billion free token quota** is available, distributed on a first-come, first-served basis. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>.
+​	MateGen目前只上线了在线服务版本，借助在线大模型来完成各项服务，无需本地硬件、无需网络环境要求即可零门槛使用。**调用MateGen需要通过API-KEY进行身份验证**，测试阶段限量**免费开放3亿免费token额度，送完即止，API-KEY领取、加入技术交流群、其他任何问题，<span style="color:red;">扫码添加客服小可爱(微信：littlelion_1215)，回复“MG”详询哦👇</span>**
 
 <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:33%;" />
 
-**We welcome and appreciate the support of course participants and new and old users alike. If the project receives more than 10k stars, we will release an open-source version along with instructional tutorials!**
+**欢迎课程学员和新老用户多多支持本项目，项目star超过10k即上线开源版及教学教程！**
 
-## MateGen Usage Demonstration
+## MateGen使用效果演示
 
-Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for the relevant code for each demonstration.
+注：各项演示操作可参考[《MateGen使用教程》](docs/MateGen使用教程.ipynb)中相关代码来实现。
 
-- **Zero-Threshold Convenient Invocation**
+- **零门槛便捷调用**
 
-  ​	Invoke MateGen in Jupyter with just three steps: **Install, Import, and Interact**!
-  
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712185454166.png" alt="image-20240712185454166" style="zoom:25%;" />
+​	只需三步即可在Jupyter中调用MateGen：**安装、导入、对话**！
 
-- **Local Massive Text Knowledge Base Q&A**
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712185454166.png" alt="image-20240712185454166" style="zoom:25%;" />
 
-  ​        With MateGen, achieve high-precision local knowledge base Q&A. MateGen's RAG system supports the retrieval of **up to 1000 texts and 10GB of text content**!
+- **本地海量文本知识库问答**
+
+  ​	借助MateGen，可实现高精度本地知识库问答，MateGen在RAG系统最多**支持1000个文本+10G规模**文本检索！
 
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240712212936156" style="zoom:30%;" />
 
-- **Interactive Visualization Drawing**
+- **交互式可视化绘图**
 
-  ​        MateGen also possesses visual capabilities and a local code interpreter function, enabling it to **mimic and draw based on user-input images**!
+  ​	MateGen同时具备视觉能力和本地代码解释器功能，因此可以**根据用户输入的图片，模仿绘制**！
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240712193604820" style="zoom:60%;" />
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240712193604820" style="zoom:60%;" />
 
-- **High-Precision NL2SQL**
+- **高精度NL2SQL**
 
-  ​        MateGen supports **fully automated RAG+NL2SQL joint execution**, allowing it to **first understand dataset fields and business information from the knowledge base before writing SQL, and supports automatic review and debugging**, significantly improving SQL accuracy.
+  ​	MateGen支持**全自动RAG+NL2SQL联合执行**，因此可以**先从知识库中了解数据集字段信息和业务信息然后再编写SQL，并且支持自动审查与自动debug**，从而大幅提高SQL准确率。
 
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712222633885.png" alt="image-20240712222633885" style="zoom:30%;" />
 
-- **Automated Machine Learning**
+- **自动机器学习**
 
-  ​        MateGen supports **fully automated RAG+code interpreter** joint execution, enabling it to read the enterprise machine learning code repository before modeling. It allows **one-click invocation of different machine learning modeling strategies through natural language**, creating your machine learning "Jarvis".
+  ​	MateGen支持**全自动RAG+代码解释器**联合执行，支持先阅读企业机器学习代码库再进行机器学习建模，通过**自然语言一键调用不同机器学习建模策略**，创建你的机器学习“贾维斯”。
 
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712225738564.png" alt="image-20240712225738564" style="zoom:40%;" />
 
-- **Advanced Deep Learning Paper Interpretation and Architecture Reproduction**
+- **前沿深度学习论文解读与架构复现**
 
-  ​       Leveraging its powerful RAG system and Multi-Function capabilities, MateGen can conduct in-depth **paper tutoring**. It can **assist users in translating and interpreting papers section by section, summarizing core knowledge points, writing hundreds of lines of code to reproduce paper architectures with one click, and directly running and verifying them in the local code environment**!
+  ​	基于自身强大的RAG系统以及Multi-Function功能，MateGen能够进行深度**论文辅导**，可以**帮助用户逐段翻译和解读论文—>总结论文核心知识点—>一键编写百行代码代码复现论文架构并在本地代码环境直接运行验证**！
 
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712231230708.png" alt="image-20240712231230708" style="zoom:40%;" />
 
-- **Kaggle Competition Coaching**
+- **Kaggle竞赛辅导**
 
-  ​        Utilizing MateGen's networking capability, knowledge base Q&A ability, and NL2Python capability, MateGen can **assist users in participating in Kaggle competitions**. MateGen can automatically **retrieve competition explanations and dataset information based on the user's provided competition problems, scrape high-scoring kernels for the competition, build a competition knowledge base, assist users in competition programming, and automatically submit results to the Kaggle platform. It will then suggest adjustments to the competition strategy based on the submission results, aiming for higher scores!**
+  ​	借助MateGen的联网能力+知识库问答能力+NL2Python能力，MateGen还可**辅助用户参与Kaggle竞赛**。MateGen可以根据用户提供的赛题，**自动获取赛题解释与数据集解释信息，自动爬取赛题高分Kernel并组建竞赛知识库，然后辅助用户进行竞赛编程，并自动提交比赛结果至Kaggle平台，最终根据提交结果提示用户调整竞赛策略，从而冲击更高分数！**
 
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713003522041.png" alt="image-20240713003522041" style="zoom: 50%;" />
 
-More application scenarios for MateGen are coming soon.
+MateGen更多应用场景即将上线。
 
-## MateGen Installation and Deployment Process
+## MateGen安装部署流程
 
-​	MateGen is lightweight and easy to call. It can be installed directly using pip, and its invocation style is similar to sklearn. By instantiating a MateGen agent, you can start interacting right away!
+​	MateGen项目轻便、调用简单，可使用pip直接进行安装，同时调用风格类似于sklearn，实例化一个MateGen智能体即可直接开启对话！
 
-- **MateGen Download Method**
+- **MateGen下载方法**
 
-  MateGen is now available on the PyPI platform and can be installed directly via `pip install mategen`. Note that MateGen requires many dependencies to run, so it is recommended to use a virtual environment for installation. First, create a virtual environment named `mategen`:
+​	MateGen现已在PyPI平台上线，可以直接通过`pip install mategen`进行安装，需要注意的是，MateGen运行所需依赖较多，因此推荐借助虚拟环境进行安装。首先创建一个名为`mategen`的虚拟环境：        
 
-  ```python
-  conda create -n mategen python=3.8
-  ```
+```bash
+conda create -n mategen python=3.8
+```
 
-  Then activate the virtual environment with the following command:
+然后使用如下指令激活虚拟环境：
 
-  ```python
-  conda activate mategen
-  ```
+```bash
+conda activate mategen
+```
 
-  Next, install MateGen in the virtual environment:
-  
-  ```python
-  pip install mategen
-  ```
-  
-  After installation, considering the need to invoke MateGen in Jupyter, we need to install the IPython Kernel in the virtual environment:
-  
-  ```python
-  pip install ipykernel
-  ```
-  
-  Add this virtual environment to Jupyter's Kernel list:
-  
-  ```python
-  python -m ipykernel install --user --name mategen --display-name "mategen"
-  ```
-  
-  Then start the Jupyter service:
-  
-  ```python
-  jupyter lab
-  ```
-  
-  Select the mategen kernel in Jupyter to enter the corresponding virtual environment and run MateGen:
-  
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713012151873" style="zoom:33%;" />
+接着在虚拟环境中安装MateGen：
 
-- **MateGen Invocation Method**
+```bash
+pip install mategen
+```
 
-  Invoking MateGen is very simple. Just import it in the code environment and input a valid API-KEY to start interacting!
+安装完成之后，考虑到需要在Jupyter中调用MateGen，我们还需要在虚拟环境中安装IPython Kernel：
+
+```bash
+pip install ipykernel
+```
+
+并且将这个虚拟环境添加到Jupyter的Kernel列表中：
+
+```bash
+python -m ipykernel install --user --name mategen --display-name "mategen"
+```
+
+然后开启Jupyter服务：     
+
+```bash
+jupyter lab
+```
+
+然后在Jupyter的Kernel中选择mategen，即可进入到对应虚拟环境运行MateGen：
+
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713012151873.png" alt="image-20240713012151873" style="zoom:33%;" />
+
+- **MateGen调用方法**
+
+  ​	MateGen调用过程非常简单，只需要在代码环境中导入并输入有效的API-KEY即可开启对话！
 
   ```python
   mategen = MateGenClass(api_key = 'YOUR_API_KEY')
   ```
 
-  Then you can use the chat function for single or multi-turn conversations:
+  然后即可使用chat功能进行单次对话或多轮对话：
 
   ```python
   mategen.chat("你好，很高兴见到你！")
@@ -141,24 +141,24 @@ More application scenarios for MateGen are coming soon.
   你好！很高兴见到你！有什么我可以帮助你的吗？
   ```
 
-  For more usage methods of MateGen, refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb).
+  更多MateGen使用方法，详见[《MateGen使用教程》](docs/MateGen使用教程.ipynb)。
 
-  ​        Free API acquisition 👉 MateGen is currently in the testing phase, with a limited **free quota of 3 billion tokens, available while supplies last. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>**
+  ​	免费API获取👉MateGen目前正处于测试阶段，限量**免费开放3亿免费token额度，送完即止，API-KEY领取、加入技术交流群、其他任何问题，<span style="color:red;">扫码添加客服小可爱(微信：littlelion_1215)，回复“MG”详询哦👇</span>**
 
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:33%;" />
 
-## MateGen Architecture and Application Description
+## MateGen架构与应用说明
 
-- Basic Architecture of MateGen
+- MateGen基本架构
 
-​        MateGen adopts the most advanced threads-runs architecture for better management of user historical message conversations and automatic resolution of various issues encountered during operation. Additionally, it utilizes a client-server separation architecture to ensure maximum stability of the Agent operation while supporting various types of underlying large models. The basic structure of MateGen is as follows:
+  ​	MateGen采用了目前最先进的threads-runs架构，以更好的进行用户历史消息对话管理以及自动修复运行中遇到的各种问题，同时采用了client与server分离架构，以确保最大程度Agent运行稳定性，同时支持多种不同类型底层大模型，MateGen基本结构如下：
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001340035.png" alt="image-20240715001340035" style="zoom: 33%;" />
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001340035.png" alt="image-20240715001340035" style="zoom: 33%;" />
 
-- MateGen for Intelligent Teaching Assistant
+- MateGen用于智能助教
 
-​        MateGen can be applied to various specific business scenarios. For example, it is currently used in the Jiutian Teacher's team to assist in the teaching of various courses, serving as an intelligent teaching assistant. The basic functional execution process of MateGen as an intelligent teaching assistant is as follows:
+  ​	MateGen同时可适用于多种不同类型具体业务场景，例如MateGen现已用于九天老师团队各门课程辅助教学环节，用于智能助教。MateGen充当智能助教的基本功能执行流程如下：
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n 
- 
- 
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />
+
+  
