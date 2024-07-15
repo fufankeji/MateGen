@@ -2,7 +2,7 @@
 
 ![136439902d507ef41f9f746bddd47fc](https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/136439902d507ef41f9f746bddd47fc.jpg)
 
-[**简体中文**](README.zh.md) | [**MateGen使用教程**](docs/MateGen使用教程.ipynb)| [**微信**](docs/wechat.png)
+[**简体中文**](README_zh.md) | [**MateGen使用教程**](docs/MateGen使用教程.ipynb)| [**微信**](docs/wechat.png)
 
 ## What is MateGen?
 
@@ -23,7 +23,7 @@ Additionally, MateGen boasts **high stability** and **high availability**, suppo
 
 MateGen is currently available only as an online service, utilizing large models to deliver various services without the need for local hardware or network environment requirements, enabling zero-threshold usage. **To use MateGen, an API-KEY is required for authentication**. During the testing phase, a limited **3 billion free token quota** is available, distributed on a first-come, first-served basis. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>.
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:33%;" />
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:8%;" />
 
 **We welcome and appreciate the support of course participants and new and old users alike. If the project receives more than 10k stars, we will release an open-source version along with instructional tutorials!**
 
@@ -145,7 +145,7 @@ More application scenarios for MateGen are coming soon.
 
   ​        Free API acquisition 👉 MateGen is currently in the testing phase, with a limited **free quota of 3 billion tokens, available while supplies last. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>**
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:33%;" />
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:8%;" />
 
 ## MateGen Architecture and Application Description
 
