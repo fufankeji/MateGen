@@ -159,5 +159,6 @@ More application scenarios for MateGen are coming soon.
 
 ​        MateGen can be applied to various specific business scenarios. For example, it is currently used in the Jiutian Teacher's team to assist in the teaching of various courses, serving as an intelligent teaching assistant. The basic functional execution process of MateGen as an intelligent teaching assistant is as follows:
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n  
- 
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n 
+ 
+ 
