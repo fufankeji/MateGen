@@ -23,7 +23,7 @@ Additionally, MateGen boasts **high stability** and **high availability**, suppo
 
 MateGen is currently available only as an online service, utilizing large models to deliver various services without the need for local hardware or network environment requirements, enabling zero-threshold usage. **To use MateGen, an API-KEY is required for authentication**. During the testing phase, a limited **3 billion free token quota** is available, distributed on a first-come, first-served basis. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>.
 
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:8%;" />
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
 
 **We welcome and appreciate the support of course participants and new and old users alike. If the project receives more than 10k stars, we will release an open-source version along with instructional tutorials!**
 
@@ -31,13 +31,11 @@ MateGen is currently available only as an online service, utilizing large models
 
 Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for the relevant code for each demonstration.
 
-
-<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n 
-
 - **Zero-Threshold Convenient Invocation**
 
   ​	Invoke MateGen in Jupyter with just three steps: **Install, Import, and Interact**!
   
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240715001720425.png" alt="image-20240715001720425" style="zoom: 50%;" />#   m a t e g e n 
 
 - **Local Massive Text Knowledge Base Q&A**
 
