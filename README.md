@@ -60,19 +60,19 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
 
   ​        MateGen supports **fully automated RAG+code interpreter** joint execution, enabling it to read the enterprise machine learning code repository before modeling. It allows **one-click invocation of different machine learning modeling strategies through natural language**, creating your machine learning "Jarvis".
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712225738564.png" alt="image-20240712225738564" style="zoom:40%;" />
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712225738564.png" alt="image-20240713010710534" width="600"/>
 
 - **Advanced Deep Learning Paper Interpretation and Architecture Reproduction**
 
   ​       Leveraging its powerful RAG system and Multi-Function capabilities, MateGen can conduct in-depth **paper tutoring**. It can **assist users in translating and interpreting papers section by section, summarizing core knowledge points, writing hundreds of lines of code to reproduce paper architectures with one click, and directly running and verifying them in the local code environment**!
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712231230708.png" alt="image-20240712231230708" style="zoom:40%;" />
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712231230708.png" alt="image-20240713010710534" width="600"/>
 
 - **Kaggle Competition Coaching**
 
   ​        Utilizing MateGen's networking capability, knowledge base Q&A ability, and NL2Python capability, MateGen can **assist users in participating in Kaggle competitions**. MateGen can automatically **retrieve competition explanations and dataset information based on the user's provided competition problems, scrape high-scoring kernels for the competition, build a competition knowledge base, assist users in competition programming, and automatically submit results to the Kaggle platform. It will then suggest adjustments to the competition strategy based on the submission results, aiming for higher scores!**
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713003522041.png" alt="image-20240713003522041" style="zoom: 50%;" />
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713003522041.png" alt="image-20240713010710534" width="600"/>
 
 More application scenarios for MateGen are coming soon.
 
