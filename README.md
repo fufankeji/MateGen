@@ -145,7 +145,7 @@ More application scenarios for MateGen are coming soon.
 
   ​        Free API acquisition 👉 MateGen is currently in the testing phase, with a limited **free quota of 3 billion tokens, available while supplies last. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>**
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:8%;" />
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="50"/>
 
 ## MateGen Architecture and Application Description
 
