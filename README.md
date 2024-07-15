@@ -23,7 +23,9 @@ Additionally, MateGen boasts **high stability** and **high availability**, suppo
 
 MateGen is currently available only as an online service, utilizing large models to deliver various services without the need for local hardware or network environment requirements, enabling zero-threshold usage. **To use MateGen, an API-KEY is required for authentication**. During the testing phase, a limited **3 billion free token quota** is available, distributed on a first-come, first-served basis. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>.
 
-<center><img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/></center>
+<div style="text-align: center;">
+<img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
+</div>
 
 **We welcome and appreciate the support of course participants and new and old users alike. If the project receives more than 10k stars, we will release an open-source version along with instructional tutorials!**
 
@@ -41,20 +43,19 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
 
   ​        With MateGen, achieve high-precision local knowledge base Q&A. MateGen's RAG system supports the retrieval of **up to 1000 texts and 10GB of text content**!
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240713010710534" width="500"/>
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712212936156.png" alt="image-20240713010710534" width="600"/>
 
 - **Interactive Visualization Drawing**
 
   ​        MateGen also possesses visual capabilities and a local code interpreter function, enabling it to **mimic and draw based on user-input images**!
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240713010710534" width="500"/>
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712193604820.png" alt="image-20240713010710534" width="600"/>
 
 - **High-Precision NL2SQL**
 
   ​        MateGen supports **fully automated RAG+NL2SQL joint execution**, allowing it to **first understand dataset fields and business information from the knowledge base before writing SQL, and supports automatic review and debugging**, significantly improving SQL accuracy.
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712222633885.png" alt="image-20240712222633885" style="zoom:30%;" />
-
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240712222633885.png" alt="image-20240713010710534" width="600"/>
 - **Automated Machine Learning**
 
   ​        MateGen supports **fully automated RAG+code interpreter** joint execution, enabling it to read the enterprise machine learning code repository before modeling. It allows **one-click invocation of different machine learning modeling strategies through natural language**, creating your machine learning "Jarvis".
