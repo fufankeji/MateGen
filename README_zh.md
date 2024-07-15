@@ -145,7 +145,7 @@ jupyter lab
 
   ​	免费API获取👉MateGen目前正处于测试阶段，限量**免费开放3亿免费token额度，送完即止，API-KEY领取、加入技术交流群、其他任何问题，<span style="color:red;">扫码添加客服小可爱(微信：littlelion_1215)，回复“MG”详询哦👇</span>**
 
-  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" style="zoom:33%;" />
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
 
 ## MateGen架构与应用说明
 
