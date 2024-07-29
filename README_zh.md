@@ -2,7 +2,11 @@
 
 ![136439902d507ef41f9f746bddd47fc](https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/136439902d507ef41f9f746bddd47fc.jpg)
 
-[**English**](README.md) | [**MateGen使用教程**](docs/MateGen使用教程.ipynb)| [**微信**](docs/wechat.png)
+<p align="center">
+  <a href="README.md"><strong>English</strong></a> | 
+  <a href="docs/MateGen使用教程.ipynb"><strong>MateGen使用教程</strong></a> | 
+  <a href="docs/wechat.png"><strong>微信</strong></a>
+</p>
 
 ## MateGen是什么？
 
