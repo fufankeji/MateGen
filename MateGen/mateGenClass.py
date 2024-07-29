@@ -50,6 +50,21 @@ dotenv_path = os.path.join(BASE_DIR, '.env')
 load_dotenv(dotenv_path)
 # print(f"dotenv_path: {dotenv_path}")
 
+def ensure_file_exists(file_path, timeout=10):
+    """
+    确保文件存在
+    :param file_path: 文件路径
+    :param timeout: 等待时间（秒）
+    :return: 文件是否存在
+    """
+    start_time = time.time()
+    while not os.path.exists(file_path):
+        if time.time() - start_time > timeout:
+            print(f"超时 {timeout} 秒，文件 {file_path} 仍不存在。")
+            return False
+        time.sleep(1)
+    return True
+
 def convert_keyword(q):
     """
     将用户输入的问题转化为适合在知乎上进行搜索的关键词
@@ -327,7 +342,7 @@ def get_omlf(client):
 
         return vector_id
 
-def create_omla(client, vector_id):
+def create_omla(client, vector_id, enhanced_mode):
     
     ag_base_key = os.getenv('AG_BASE_KEY')
     ag_base = decrypt_string(ag_base_key, b'YAboQcXx376HSUKqzkTz8LK1GKs19Skg4JoZH4QUCJc=')
@@ -342,15 +357,15 @@ def create_omla(client, vector_id):
     exec(file_content, exec_namespace)
     coml = exec_namespace.get('coml')
     if vector_id == '-1':
-        asid = coml(client=client)
+        asid = coml(client=client, enhanced_mode=enhanced_mode)
     else:
-        asid = coml(client=client, vs_id=vector_id)
+        asid = coml(client=client, vs_id=vector_id, enhanced_mode=enhanced_mode)
     
     return asid
 
-def cre_ct(client):
+def cre_ct(client, enhanced_mode):
     vector_id = get_omlf(client)
-    asid = create_omla(client, vector_id)
+    asid = create_omla(client, vector_id, enhanced_mode)
     return asid   
 
 def function_to_call(run_details, client, thread_id, run_id):
@@ -608,7 +623,9 @@ def chat_base(user_input,
     # 若消息创建完成，则返回模型返回信息
     elif run_details.status == 'completed':
         messages_check = client.beta.threads.messages.list(thread_id=thread_id)
-        display(Markdown(messages_check.data[0].content[0].text.value))
+        chat_res = messages_check.data[0].content[0].text.value
+        res = '**MateGen**:' + chat_res
+        display(Markdown(res))
         
     # 若外部函数响应超时，则根据用户反馈制定执行流程
     elif run_details.status == 'expired' or run_details.status == 'cancelled' :
@@ -666,7 +683,7 @@ def chat_base_auto_cancel(user_input,
                           run_id=None,
                           first_input=True, 
                           tool_outputs=None):
-    max_attempt = 1
+    max_attempt = 3
     now_attempt = 0
     
     while now_attempt < max_attempt:
@@ -747,19 +764,20 @@ def get_knowledge_base_description(sub_folder_name):
     # 子文件夹路径
     sub_folder_path = os.path.join(base_path, sub_folder_name)
     sub_json_file = os.path.join(sub_folder_path, f'{sub_folder_name}_vector_id.json')
+    # print(sub_json_file)
 
     # 检查子目录 JSON 文件是否存在
-    if os.path.exists(sub_json_file):
-        with open(sub_json_file, 'r') as f:
-            data = json.load(f)
-            description = data.get('knowledge_base_description', "")
-            if description:
-                return description
-            else:
-                return False
-    else:
-        print(f"子目录 JSON 文件不存在：{sub_json_file}")
-        return False
+    # if ensure_file_exists(sub_json_file):
+    with open(sub_json_file, 'r') as f:
+        data = json.load(f)
+        description = data.get('knowledge_base_description', "")
+        if description:
+            return description
+        else:
+            return False
+    # else:
+        # print(f"子目录 JSON 文件不存在：{sub_json_file}")
+        # return False
 
 def update_knowledge_base_description(sub_folder_name, description):
     """
@@ -781,16 +799,19 @@ def update_knowledge_base_description(sub_folder_name, description):
     sub_json_file = os.path.join(sub_folder_path, f'{sub_folder_name}_vector_id.json')
 
     # 检查子目录 JSON 文件是否存在
-    if os.path.exists(sub_json_file):
-        with open(sub_json_file, 'r+') as f:
-            data = json.load(f)
-            data['knowledge_base_description'] = description
-            f.seek(0)
-            json.dump(data, f, indent=4)
-            f.truncate()
-        print(f"已更新知识库：{sub_folder_name}的相关描述")
-    else:
-        print(f"子目录 JSON 文件不存在：{sub_json_file}")
+    # if ensure_file_exists(sub_json_file):
+    with open(sub_json_file, 'r+') as f:
+        data = json.load(f)
+        # 先删除原有的 description 内容
+        data['knowledge_base_description'] = ""
+        # 再写入新的 description 内容
+        data['knowledge_base_description'] = description
+        f.seek(0)
+        json.dump(data, f, indent=4)
+        f.truncate()
+    print(f"已更新知识库：{sub_folder_name}的相关描述")
+    # else:
+        # print(f"子目录 JSON 文件不存在：{sub_json_file}")
 
 def print_and_select_knowledge_base():
     # 获取 KNOWLEDGE_LIBRARY_PATH 环境变量
@@ -836,26 +857,71 @@ def print_and_select_knowledge_base():
                 print("无效的选择。请再试一次。")
         except ValueError:
             print("请输入一个有效的序号。")
+            
+def print_and_select_knowledge_base_to_update():
+    knowledge_library_path = os.getenv('KNOWLEDGE_LIBRARY_PATH')
+    # 检查 KNOWLEDGE_LIBRARY_PATH 是否存在且路径是否有效
+    if knowledge_library_path and os.path.exists(knowledge_library_path):
+        base_path = os.path.join(knowledge_library_path, 'knowledge_base')
+    else:
+        # 如果 KNOWLEDGE_LIBRARY_PATH 不存在或路径无效，则在 home 目录下创建文件夹
+        home_dir = str(Path.home())
+        base_path = os.path.join(home_dir, 'knowledge_base')
+            
+    main_json_file = os.path.join(base_path, 'main_vector_db_mapping.json')
+    if not os.path.exists(main_json_file):
+        print(f"{main_json_file} 不存在。请先创建知识库。")
+        return None, None
+    
+    # 读取主目录 JSON 文件
+    with open(main_json_file, 'r') as f:
+        main_mapping = json.load(f)
+    
+    while True:
+        # 打印所有知识库名称
+        print("知识库列表：")
+        knowledge_bases = list(main_mapping.keys())
+        for idx, name in enumerate(knowledge_bases, 1):
+            print(f"{idx}. {name}")
+        
+        # 用户选择知识库
+        try:
+            selection = int(input("请选择一个知识库的序号（或输入0退出）：")) - 1
+            if selection == -1:
+                return None, None
+            elif 0 <= selection < len(knowledge_bases):
+                selected_knowledge_base = knowledge_bases[selection]
+                vector_db_id = main_mapping[selected_knowledge_base]
+                return selected_knowledge_base, vector_db_id
+            else:
+                print("无效的选择。请再试一次。")
+        except ValueError:
+            print("请输入一个有效的序号。")
+
         
 class MateGenClass:
     def __init__(self, 
                  api_key, 
+                 enhanced_mode=False,
                  knowledge_base_chat=False,
                  kaggle_competition_guidance=False):
         
         """
         初始参数解释：
-        api_key：必选参数，表示调用OpenAI模型所必须的字符串密钥，没有默认取值，需要用户提前设置才可使用MateGen。api-key获取与token购买：添加客服小可爱：littlelion_1215，回复“MG”详询哦，MateGen测试期间限时免费赠送2亿token，送完即止~
+        api_key：必选参数，表示调用OpenAI模型所必须的字符串密钥，没有默认取值，需要用户提前设置才可使用MateGen。api-key获取与token购买：添加客服小可爱：littlelion_1215，回复“MG”详询哦，MateGen测试期间限时免费赠送千亿token，送完即止~
+        
+        enhanced_mode：可选参数，表示是否开启增强模式，开启增强模式时，MateGen各方面性能都将大幅提高，但同时也将更快速的消耗token额度。
         
         knowledge_base_name：可选参数，表示知识库名称，当输入字符串名称的时候，默认会开启知识库问答模式。需要注意的是，我们需要手动在知识库中放置文档，才能顺利进行知识库问答。需要注意的是，若此处输入一个Kaggle竞赛名字，并在kaggle_competition_guidance输入True，即可开启Kaggle辅导模式。MateGen会自动接入Kaggle API进行赛题信息搜索和热门Kernel搜索，并自动构建同名知识库，并开启知识库问答模式，此时并不需要手动放置文件。
         
-        kaggle_competition_guidance：可选参数，表示是否开启Kaggle辅导模式。开启Kaggle辅导模式时，需要在knowledge_base_name参数位置输入正确的Kaggle竞赛名。
+        kaggle_competition_guidance：可选参数，表示是否开启Kaggle辅导模式。开启Kaggle辅导模式时，需要在knowledge_base_name参数位置输入正确的Kaggle竞赛名。需要注意，只有能够顺利联网时，才可开启竞赛辅导模式。
         
         """
         make_hl()
         global home_dir, log_dir, thread_log_file, token_log_file, agent_info_file, client
         # 基础属性定义
         self.api_key = api_key
+        self.enhanced_mode = enhanced_mode
         self.knowledge_base_chat = knowledge_base_chat
         self.kaggle_competition_guidance = kaggle_competition_guidance
         self.knowledge_base_name = None
@@ -887,13 +953,13 @@ class MateGenClass:
                     shutil.rmtree(log_dir)
                     make_hl()
                     initialize_agent_info(api_key=self.api_key, agent_type=s2)
-                    self.s3 = cre_ct(client)
+                    self.s3 = cre_ct(client, enhanced_mode)
                     set_agent_initialized(if_initialized=True)
                     set_agent_id(asid=self.s3)                    
                     
                 elif not get_agent_info()['initialized']:
                     print("首次使用MateGen，正在进行Agent基础设置...")
-                    self.s3 = cre_ct(client)
+                    self.s3 = cre_ct(client, enhanced_mode)
                     set_agent_initialized(if_initialized=True)
                     set_agent_id(asid=self.s3)
                 else:
@@ -940,16 +1006,29 @@ class MateGenClass:
                         print(f"当前问答知识库文件夹路径：{self.base_path}，请在文件夹中放置知识库文件。")
                         print("目前支持PDF、Word、PPT、md等格式读取与检索。")
                 else:
-                    pass
+                    if enhanced_mode:
+                        model = 'gpt-4o'
+                    else:
+                        model = 'gpt-4o-mini'
+                    asi = self.client.beta.assistants.retrieve(self.s3)
+                    instructions = asi.instructions
+                    instructions = remove_knowledge_base_info(instructions)
+                    asi = self.client.beta.assistants.update(
+                        self.s3,
+                        model=model,
+                        instructions=instructions
+                    )
+                    
                 if (self.kaggle_competition_guidance == True or self.knowledge_base_chat == True) and self.vector_id != None:
                     if wait_for_vector_store_ready(vs_id=self.vector_id, client=self.client):
                         asi = self.client.beta.assistants.retrieve(self.s3)
                         instructions = asi.instructions
-                        if self.knowledge_base_description == '':
-                            print('知识库未设置知识库描述，可以调用write_knowledge_base_description来写入知识库描述，以便提升检索效果。')
+                        instructions = remove_knowledge_base_info(instructions)
+                        knowledge_base_description = get_knowledge_base_description(sub_folder_name=self.knowledge_base_name)
+                        new_instructions = instructions + knowledge_base_description
                         asi = self.client.beta.assistants.update(
                             self.s3,
-                            instructions=instructions+self.knowledge_base_description, 
+                            instructions=new_instructions,
                             tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
                         )
                         
@@ -973,21 +1052,26 @@ class MateGenClass:
             if not is_folder_not_empty(self.base_path):
                 user_input = input(f"知识库文件夹：{self.base_path}为空，请选择1：关闭知识库问答功能并继续对话；2：退出对话，在指定文件夹内放置文件之后再进行知识库问答对话。")
                 if user_input == '1':
+                    self.knowledge_base_chat = False
                     pass
                 else:
                     return None
             else:
                 self.upload_knowledge_base(knowledge_base_name=self.knowledge_base_name)
-                if wait_for_vector_store_ready(vs_id=self.vector_id, client=self.client):
-                    asi = self.client.beta.assistants.retrieve(self.s3)
-                    instructions = asi.instructions
-                    if self.knowledge_base_description == '':
-                        print('知识库未设置知识库描述，可以调用write_knowledge_base_description来写入知识库描述，以便提升检索效果。')
-                    asi = self.client.beta.assistants.update(
-                        self.s3,
-                        instructions=instructions+self.knowledge_base_description, 
-                        tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
-                    )
+                if self.vector_id != None:
+                    if wait_for_vector_store_ready(vs_id=self.vector_id, client=self.client):
+                        asi = self.client.beta.assistants.retrieve(self.s3)
+                        instructions = asi.instructions
+                        instructions = remove_knowledge_base_info(instructions)
+                        knowledge_base_description = get_knowledge_base_description(sub_folder_name=self.knowledge_base_name)
+                        new_instructions = instructions + knowledge_base_description
+                        asi = self.client.beta.assistants.update(
+                            self.s3,
+                            instructions=new_instructions,
+                            tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
+                        )
+                else:
+                    print("知识库创建不成功，请稍后再试。")
             
         head_str = "▌ MateGen初始化完成，欢迎使用！"
         display(Markdown(head_str))
@@ -1026,8 +1110,14 @@ class MateGenClass:
             return None
         else:
             self.vector_id = create_knowledge_base(self.client, self.knowledge_base_name)
-            print(f"已成功更新知识库{self.knowledge_base_name}")
+            if self.vector_id != None:
+                print(f"已成功更新知识库{self.knowledge_base_name}")
             
+    def update_knowledge_base(self):
+        knowledge_base_name, vector_id = print_and_select_knowledge_base_to_update()
+        if knowledge_base_name != None:
+            self.upload_knowledge_base(knowledge_base_name=knowledge_base_name)
+                
     def get_knowledge_base_vsid(self, knowledge_base_name=None):
         if knowledge_base_name != None:
             self.knowledge_base_name = knowledge_base_name
@@ -1143,8 +1233,26 @@ class MateGenClass:
             home_dir = str(Path.home())
             log_dir = os.path.join(home_dir, "._logs")
             shutil.rmtree(log_dir)
+            print("已重置成功！请重新创建MateGen并继续使用。")
+            
         except Exception as e:
             print("重置失败，请重启代码环境，并确认API-KEY后再尝试重置。")
+            
+    def reset_account_info(self):
+        res = input("账户重置功能将重置全部知识库在线存储文档、词向量数据库和已创建的Agent，是否继续：1.继续；2.退出。")
+        if res == '1':
+            print("正在重置账户各项信息...")
+            print("正在删除在线知识库中全部文档文档...")
+            delete_all_files(self.client)
+            print("正在删除知识库的词向量存储...")
+            delete_all_vector_stores(self.client)
+            print("正在删除已创建的Agent")
+            delete_all_assistants(self.client)
+            print("正在重置Agent信息")
+            self.reset()
+            print("已重置成功重置账户！请重新创建MateGen并继续使用。")
+        else:
+            return None
         
     def print_usage(self):
         print_token_usage()
@@ -1426,7 +1534,7 @@ def create_knowledge_base_folder(sub_folder_name=None):
         sub_json_file = os.path.join(sub_folder_path, f'{sub_folder_name}_vector_id.json')
         if not os.path.exists(sub_json_file):
             with open(sub_json_file, 'w') as f:
-                json.dump({"vector_db_id": -1, "knowledge_base_description": ""}, f, indent=4)
+                json.dump({"vector_db_id": None, "knowledge_base_description": ""}, f, indent=4)
 
         return sub_folder_path
     else:
@@ -1490,7 +1598,7 @@ def create_knowledge_base_folder(sub_folder_name=None):
         sub_json_file = os.path.join(sub_folder_path, f'{sub_folder_name}_vector_id.json')
         if not os.path.exists(sub_json_file):
             with open(sub_json_file, 'w') as f:
-                json.dump({"vector_db_id": -1, "knowledge_base_description": ""}, f, indent=4)
+                json.dump({"vector_db_id": None, "knowledge_base_description": ""}, f, indent=4)
 
         return sub_folder_path
     else:
@@ -1507,6 +1615,34 @@ def get_specific_files(folder_path):
     ]
     return file_paths
 
+def get_formatted_file_list(folder_path):
+    # 获取指定文件夹内的特定文件类型的文件路径
+    file_paths = get_specific_files(folder_path)
+    
+    # 提取文件名并去掉扩展名
+    file_names = [os.path.splitext(os.path.basename(file_path))[0] for file_path in file_paths]
+    
+    # 将文件名用顿号分隔并组合成一个字符串
+    formatted_file_list = '、'.join(file_names)
+    
+    # 构建最终输出字符串
+    result = f"当前你的知识库包含文档标题如下：{formatted_file_list}。当用户所提出的问题和你的知识库文档内容相关时，请先检索你的知识库再进行回答。"
+    
+    return result
+
+def remove_knowledge_base_info(text):
+    keyword = "当前你的知识库包含文档标题如下："
+    
+    # 查找关键字的位置
+    index = text.find(keyword)
+    
+    # 如果关键字存在，删除该关键字及其之后的所有字符
+    if index != -1:
+        return text[:index]
+    
+    # 如果关键字不存在，返回原始字符串
+    return text
+
 def create_knowledge_base(client, knowledge_base_name, folder_path_base = None):
     
     print("正在创建知识库，请稍后...")
@@ -1515,6 +1651,7 @@ def create_knowledge_base(client, knowledge_base_name, folder_path_base = None):
         folder_path = create_knowledge_base_folder(sub_folder_name=knowledge_base_name)
     else:
         folder_path = folder_path_base
+    
     knowledge_base_name = knowledge_base_name + '!!' + client.api_key[8: ]
     vector_stores = client.beta.vector_stores.list()
     
@@ -1549,7 +1686,11 @@ def create_knowledge_base(client, knowledge_base_name, folder_path_base = None):
         file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
             vector_store_id=vector_id, files=file_streams
         )
+        knowledge_base_description = get_formatted_file_list(folder_path)
+        update_knowledge_base_description(sub_folder_name=sub_folder_name, description=knowledge_base_description)
+        
     except Exception as e:
+        print(f"发生错误: {e}")
         print("知识库无法创建，请再次确认知识库文件夹中存在格式合规的文件")
         return None
     
@@ -1788,22 +1929,21 @@ def upload_fig_to_oss(fig, object_name=None):
         match = re.search(r'(oss[^/]*)', bucket.endpoint)
         endpoint_url = match.group(1)
         url = f"https://{bucket.bucket_name}.{endpoint_url}/{object_name}"
-        print(f"Figure uploaded to OSS as {object_name}")
+        # print(f"Figure uploaded to OSS as {object_name}")
         return url
     except Exception as e:
-        print(f"Failed to upload figure: {e}")
+        # print(f"Failed to upload figure: {e}")
         return None
 
-def fig_inter(py_code, fname, g='globals()'):
+def fig_inter(py_code, g='globals()'):
     """
-    用于执行一段包含可视化绘图的Python代码，并最终获取一个图片类型对象，并上传至阿里云oss
-    :param py_code: 字符串形式的Python代码，用于根据需求进行绘图，代码中必须包含Figure对象创建过程
-    :param fname: py_code代码中创建的Figure变量名，以字符串形式表示。
+    用于执行一段包含可视化绘图的Python代码
+    :param py_code: 字符串形式的Python代码，用于根据需求进行绘图，代码中必须创建名为fig的Figure对象。
     :param g: g，字符串形式变量，表示环境变量，无需设置，保持默认参数即可
     :return：代码运行的最终结果，若顺利创建图片并上传至oss，则返回图片的url地址
     """    
     # 保存当前的后端
-    current_backend = matplotlib.get_backend()
+    # current_backend = matplotlib.get_backend()
     
     # 设置为Agg后端
     # matplotlib.use('Agg')
@@ -1820,18 +1960,24 @@ def fig_inter(py_code, fname, g='globals()'):
         # matplotlib.use(current_backend)
     
     # 根据图片名称，获取图片对象
-    fig = local_vars[fname]
+    try:
+        fig = local_vars['fig']
+    except KeyError:
+        return "未找到名为'fig'的Figure对象，请确保py_code中创建了一个名为'fig'的Figure对象。"
     
     
     # 上传图片
     try:
         fig_url = upload_fig_to_oss(fig)
-        markdown_text = f"![Image]({fig_url})"
-        # display(Markdown(markdown_text))
-        res = f"已经成功运行代码，并已将代码创建的图片存储至：{fig_url}"
+        if fig_url != None:
+            markdown_text = f"![Image]({fig_url})"
+            # display(Markdown(markdown_text))
+            res = f"已经成功运行代码，并已将代码创建的图片存储至：{fig_url}"
+        else:
+            res = "图像已顺利创建并成功打印，函数已顺利执行。"
         
     except Exception as e:
-        res = "图像已顺利创建并打印，由于未设置阿里云oss存储，因此无需返回url地址。"
+        res = "图像已顺利创建并成功打印，函数已顺利执行。"
         
     print(res)
     return res
@@ -2167,11 +2313,15 @@ def get_vector_db_id(knowledge_base_name):
         # 如果 KNOWLEDGE_LIBRARY_PATH 不存在或路径无效，则在 home 目录下创建文件夹
         home_dir = str(Path.home())
         base_path = os.path.join(home_dir, 'knowledge_base')
+        
+    # 创建 base_path 文件夹
+    os.makedirs(base_path, exist_ok=True)
     
     # 检查主目录 JSON 文件
     main_json_file = os.path.join(base_path, 'main_vector_db_mapping.json')
     if not os.path.exists(main_json_file):
-        print(f"{main_json_file} 不存在。")
+        with open(main_json_file, 'w') as f:
+            json.dump({}, f, indent=4)
         return None
     
     # 读取主目录 JSON 文件
@@ -2639,6 +2789,35 @@ def is_google_base_url_valid(base_url):
         except Exception as e:
             print(f"检测中转地址时出错: {e}")
             return False
+        
+def delete_all_files(client):
+    # 获取所有文件的列表
+    files = client.files.list()
+
+    # 逐个删除文件
+    for file in files.data:
+        file_id = file.id
+        client.files.delete(file_id)
+        # print(f"Deleted file: {file_id}")
+
+def delete_all_vector_stores(client):
+    # 获取所有词向量库的列表
+    vector_stores = client.beta.vector_stores.list()
+
+    # 逐个删除词向量库
+    for vector_store in vector_stores.data:
+        vector_store_id = vector_store.id
+        client.beta.vector_stores.delete(vector_store_id)
+        # print(f"Deleted vector store: {vector_store_id}")
+        
+def delete_all_assistants(client):
+    assistants = client.beta.assistants.list()
+    for assistant in assistants.data:
+        try:
+            client.beta.assistants.delete(assistant_id=assistant.id)
+            # print(f"Assistant {assistant.id} deleted successfully.")
+        except OpenAIError as e:
+            print(f"An error occurred while deleting assistant {assistant.id}: {e}")
         
 def main():
     import argparse

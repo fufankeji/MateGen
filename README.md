@@ -16,13 +16,13 @@ The basic features of MateGen are as follows:
 - 🚩 **High-Precision NL2SQL Functionality**: Generate SQL queries based on user needs and connect to the local MySQL environment for automatic execution and debugging. It also supports retrieving data dictionaries and enterprise data knowledge bases before writing SQL queries, thereby improving SQL accuracy.
 - 🛩️ **Visual and Networking Capabilities**: Enable MateGen's visual capabilities by inputting image URLs during conversations to recognize image content. MateGen also has networking capabilities to automatically initiate search-based Q&A when encountering questions it cannot answer.
 - 🚅 **Unlimited Conversation Context**: MateGen supports unlimited conversation length, managing the density of unknown information in historical dialogues to save tokens while maintaining an infinite conversation context.
+- 💰**Extremely Low Usage Cost**: Although MateGen is powered by an online large model, the actual usage cost is extremely low. In normal mode, 500,000 tokens cost only 1 yuan!
 
 Additionally, MateGen boasts **high stability** and **high availability**, supports **Multi Function calling** (one task triggering multiple functions) and **Parallel Function calling** (one function initiating multiple executors), can **automatically decompose complex tasks**, **auto-debug**, and possesses a certain degree of **autonomous awareness**. It can **review its own actions** and deeply **explore user intentions**.
 
 ## MateGen API-KEY Acquisition
 
 MateGen is currently available only as an online service, utilizing large models to deliver various services without the need for local hardware or network environment requirements, enabling zero-threshold usage. **To use MateGen, an API-KEY is required for authentication**. During the testing phase, a limited **3 billion free token quota** is available, distributed on a first-come, first-served basis. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>.
-
 <div align="center">
 <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
 </div>
