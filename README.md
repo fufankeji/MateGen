@@ -27,6 +27,7 @@ Additionally, MateGen boasts **high stability** and **high availability**, suppo
 ## MateGen API-KEY Acquisition
 
 MateGen is currently available only as an online service, utilizing large models to deliver various services without the need for local hardware or network environment requirements, enabling zero-threshold usage. **To use MateGen, an API-KEY is required for authentication**. During the testing phase, a limited **3 billion free token quota** is available, distributed on a first-come, first-served basis. For API-KEY acquisition, joining the technical support group, or any other inquiries, <span style="color:red;">please scan the QR code to add our friendly customer service representative on WeChat (ID: littlelion_1215) and reply with "MG" for more details👇</span>.
+
 <div align="center">
 <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713010710534.png" alt="image-20240713010710534" width="200"/>
 </div>
@@ -90,6 +91,14 @@ Note: Refer to the [MateGen Usage Tutorial](docs/MateGen使用教程.ipynb) for 
   <div align="center">
   <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240713003522041.png" alt="image-20240713010710534" width="600"/>
   </div>  
+
+- **Intelligent Teaching Assistant**
+
+Based on MateGen's powerful capabilities in massive text retrieval and Q&A, as well as its coding abilities, a MateGen equipped with a knowledge base of course materials can fully function as an intelligent teaching assistant. Before learning, it can assist users with pre-study preparations and create study plans. During learning, it can provide 24/7 real-time Q&A support, helping users with programming or other coding tasks anytime. After class, it can generate exercises based on users' questions during the course, analyze weak points in their knowledge, and compile them into review documents for post-class revision.
+
+  <div align="center">
+  <img src="https://ml2022.oss-cn-hangzhou.aliyuncs.com/img/image-20240726003714902.png" alt="image-20240713010710534" width="600"/>
+  </div>
 
 More application scenarios for MateGen are coming soon.
 
