@@ -1,0 +1,10 @@
+.ipynb_checkpoints/
+# Python 字节码文件
+*.pyc
+__pycache__/
+
+# JetBrains IDE（如 PyCharm）配置目录
+.idea/
+
+# Python 虚拟环境目录
+venv/

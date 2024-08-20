@@ -1,0 +1,15 @@
+MANIFEST.in
+README.md
+setup.py
+MateGen/.env
+MateGen/__init__.py
+MateGen/baseTools.py
+MateGen/getProfile.py
+MateGen/mainFunc.py
+MateGen/mateGenClass.py
+MateGen.egg-info/PKG-INFO
+MateGen.egg-info/SOURCES.txt
+MateGen.egg-info/dependency_links.txt
+MateGen.egg-info/entry_points.txt
+MateGen.egg-info/requires.txt
+MateGen.egg-info/top_level.txt
