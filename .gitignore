@@ -8,3 +8,5 @@ __pycache__/
 
 # Python 虚拟环境目录
 venv/
+
+.env
