@@ -46,9 +46,9 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 from MateGen.config import setup_logging
+
 # 调用函数来设置日志
 setup_logging()
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # print(f"BASE_DIR: {BASE_DIR}")
@@ -617,7 +617,6 @@ def chat_base(user_input,
               run_id=None,
               first_input=True,
               tool_outputs=None):
-
     # 创建消息
     if first_input:
         message = client.beta.threads.messages.create(
@@ -722,12 +721,12 @@ def chat_base_auto_cancel(user_input,
         try:
 
             res = chat_base(user_input=user_input,
-                      assistant_id=assistant_id,
-                      client=client,
-                      thread_id=thread_id,
-                      run_id=run_id,
-                      first_input=first_input,
-                      tool_outputs=tool_outputs)
+                            assistant_id=assistant_id,
+                            client=client,
+                            thread_id=thread_id,
+                            run_id=run_id,
+                            first_input=first_input,
+                            tool_outputs=tool_outputs)
             if res:
                 return res
             break  # 成功运行后退出循环
@@ -847,7 +846,8 @@ def update_knowledge_base_description(sub_folder_name, description):
         f.seek(0)
         json.dump(data, f, indent=4)
         f.truncate()
-    print(f"已更新知识库：{sub_folder_name}的相关描述")
+    logging.info(f"已更新知识库：{sub_folder_name}的相关描述")
+    return True
     # else:
     # print(f"子目录 JSON 文件不存在：{sub_json_file}")
 
@@ -867,35 +867,38 @@ def print_and_select_knowledge_base():
     # 检查主目录 JSON 文件
     main_json_file = os.path.join(base_path, 'main_vector_db_mapping.json')
     if not os.path.exists(main_json_file):
-        print(f"{main_json_file} 不存在。请先创建知识库。")
-        return None, None
+        logging.info(f"{main_json_file} 不存在。请先创建知识库。")
+        return []
 
     # 读取主目录 JSON 文件
     with open(main_json_file, 'r') as f:
         main_mapping = json.load(f)
 
-    while True:
-        # 打印所有知识库名称
-        print("知识库列表：")
-        knowledge_bases = list(main_mapping.keys())
-        for idx, name in enumerate(knowledge_bases, 1):
-            print(f"{idx}. {name}")
+    knowledge_bases = [{"name": key, "vector_db_id": value} for key, value in main_mapping.items()]
+    return knowledge_bases
 
-        # 用户选择知识库
-        try:
-            selection = int(input("请选择一个知识库的序号（或输入0创建新知识库）：")) - 1
-            if selection == -1:
-                new_knowledge_base = input("请输入新知识库的名称：")
-                # 返回新知识库名称和 None 作为 ID
-                return new_knowledge_base, None
-            elif 0 <= selection < len(knowledge_bases):
-                selected_knowledge_base = knowledge_bases[selection]
-                vector_db_id = main_mapping[selected_knowledge_base]
-                return selected_knowledge_base, vector_db_id
-            else:
-                print("无效的选择。请再试一次。")
-        except ValueError:
-            print("请输入一个有效的序号。")
+    # while True:
+    #     # 打印所有知识库名称
+    #     print("知识库列表：")
+    #     knowledge_bases = list(main_mapping.keys())
+    #     for idx, name in enumerate(knowledge_bases, 1):
+    #         print(f"{idx}. {name}")
+    #
+    #     # 用户选择知识库
+    #     try:
+    #         selection = int(input("请选择一个知识库的序号（或输入0创建新知识库）：")) - 1
+    #         if selection == -1:
+    #             new_knowledge_base = input("请输入新知识库的名称：")
+    #             # 返回新知识库名称和 None 作为 ID
+    #             return new_knowledge_base, None
+    #         elif 0 <= selection < len(knowledge_bases):
+    #             selected_knowledge_base = knowledge_bases[selection]
+    #             vector_db_id = main_mapping[selected_knowledge_base]
+    #             return selected_knowledge_base, vector_db_id
+    #         else:
+    #             print("无效的选择。请再试一次。")
+    #     except ValueError:
+    #         print("请输入一个有效的序号。")
 
 
 def print_and_select_knowledge_base_to_update():
@@ -1011,6 +1014,7 @@ class MateGenClass:
                 self.thread_id = self.thread.id
                 log_token_usage(self.thread_id, 0)
 
+                # TODO
                 if self.kaggle_competition_guidance == True:
                     self.competition_name = competition_name
                     self.vector_id = get_vector_db_id(knowledge_base_name=self.competition_name)
@@ -1075,7 +1079,8 @@ class MateGenClass:
                 logging.info("当前网络环境无法连接服务器，请检查网络并稍后重试...")
 
         except openai.AuthenticationError:
-            logging.info("API-KEY未通过验证，请添加客服小可爱微信：littlelion_1215领取限量免费测试API-KEY，或按需购买token。")
+            logging.info(
+                "API-KEY未通过验证，请添加客服小可爱微信：littlelion_1215领取限量免费测试API-KEY，或按需购买token。")
         except openai.APIConnectionError:
             logging.info("当前网络环境无法连接服务器，请检查网络并稍后重试...")
         except openai.RateLimitError:
@@ -1089,7 +1094,8 @@ class MateGenClass:
         if self.knowledge_base_chat == True and self.vector_id == None:
             if not is_folder_not_empty(self.base_path):
 
-                return {"data": f"知识库文件夹：{self.base_path}为空，请选择关闭知识库问答功能并继续对话，或者退出对话，在指定文件夹内放置文件之后再进行知识库问答对话。"}
+                return {
+                    "data": f"知识库文件夹：{self.base_path}为空，请选择关闭知识库问答功能并继续对话，或者退出对话，在指定文件夹内放置文件之后再进行知识库问答对话。"}
 
             else:
                 self.upload_knowledge_base(knowledge_base_name=self.knowledge_base_name)
@@ -1107,20 +1113,19 @@ class MateGenClass:
                             tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
                         )
                 else:
-                    return {"data":"知识库创建失败"}
+                    return {"data": "知识库创建失败"}
 
         if question != None:
             return chat_base_auto_cancel(user_input=question,
-                                             assistant_id=self.s3,
-                                             client=self.client,
-                                             thread_id=self.thread_id,
-                                             run_id=None,
-                                             first_input=True,
-                                             tool_outputs=None)
+                                         assistant_id=self.s3,
+                                         client=self.client,
+                                         thread_id=self.thread_id,
+                                         run_id=None,
+                                         first_input=True,
+                                         tool_outputs=None)
 
         else:
             return {"data": "你好，我是MateGen，你的个人交互式编程助理，有任何问题都可以问我哦~"}
-
 
     def upload_knowledge_base(self, knowledge_base_name=None):
         if knowledge_base_name != None:
@@ -1171,14 +1176,14 @@ class MateGenClass:
             # res = move_folder(base_path, base_url)
             # if res:
             set_key(dotenv_path, 'KNOWLEDGE_LIBRARY_PATH', base_url)
-            print(f"知识库地址修改为：{base_url}")
+            return True
             # else:
             # pass
         else:
-            print(f"无效的知识库地址：{base_url}")
+            return False
 
     def set_base_url(self, base_url):
-        if is_valid_base_url(base_url):
+        if self.is_valid_base_url(base_url):
             set_key(dotenv_path, 'BASE_URL', base_url)
             print(f"更新后base_url地址：{base_url}")
         else:
@@ -1682,8 +1687,9 @@ def remove_knowledge_base_info(text):
 
 
 def create_knowledge_base(client, knowledge_base_name, folder_path_base=None):
-    print("正在创建知识库，请稍后...")
+    logging.info("正在创建知识库，请稍后...")
     sub_folder_name = knowledge_base_name
+    logging.info(f"当前知识库的本地路径是：{folder_path_base}")
     if folder_path_base == None:
         folder_path = create_knowledge_base_folder(sub_folder_name=knowledge_base_name)
     else:
@@ -1691,12 +1697,7 @@ def create_knowledge_base(client, knowledge_base_name, folder_path_base=None):
 
     knowledge_base_name = knowledge_base_name + '!!' + client.api_key[8:]
     vector_stores = client.beta.vector_stores.list()
-
     vector_id = None
-    # expires_after = {
-    # "anchor": "last_active_at",
-    # "days": 1
-    # }
 
     for vs in vector_stores.data:
         if vs.name == knowledge_base_name:
@@ -1711,7 +1712,7 @@ def create_knowledge_base(client, knowledge_base_name, folder_path_base=None):
                 client.files.delete(file.id)
             vector_id = vs.id
 
-    print("正在创建知识库的向量存储，请稍后...")
+    logging.info("正在创建知识库的向量存储，请稍后...")
     if vector_id == None:
         vector_store = client.beta.vector_stores.create(name=knowledge_base_name)
 
@@ -1727,25 +1728,12 @@ def create_knowledge_base(client, knowledge_base_name, folder_path_base=None):
         update_knowledge_base_description(sub_folder_name=sub_folder_name, description=knowledge_base_description)
 
     except Exception as e:
-        print(f"发生错误: {e}")
-        print("知识库无法创建，请再次确认知识库文件夹中存在格式合规的文件")
         return None
 
-    # dotenv_path = find_dotenv()
-    # if not dotenv_path:
-    # with open('.env', 'w', encoding='utf-8') as f:
-    # pass
-    # dotenv_path = find_dotenv()
-
-    # load_dotenv(dotenv_path)
-    # specific_base_var = knowledge_base_name + "_vector_id"
-    # os.environ[specific_base_var] = vector_id
-
-    # set_key(dotenv_path, specific_base_var, os.environ[specific_base_var])
     if knowledge_base_name != None:
         update_vector_db_mapping(sub_folder_name=sub_folder_name,
                                  vector_db_id=vector_id)
-    print("知识库创建完成！")
+    logging.info("知识库创建完成！")
     return vector_id
 
 
@@ -2023,7 +2011,42 @@ def fig_inter(py_code, g='globals()'):
     return res
 
 
-# create_knowledge_base_folder(sub_folder_name=None)
+def create_knowledge_base_folder(sub_folder_name=None):
+    # 获取 KNOWLEDGE_LIBRARY_PATH 环境变量
+    knowledge_library_path = os.getenv('KNOWLEDGE_LIBRARY_PATH')
+
+    # 检查 KNOWLEDGE_LIBRARY_PATH 是否存在且路径是否有效
+    if knowledge_library_path and os.path.exists(knowledge_library_path):
+        base_path = os.path.join(knowledge_library_path, 'knowledge_base')
+    else:
+        # 如果 KNOWLEDGE_LIBRARY_PATH 不存在或路径无效，则在 home 目录下创建文件夹
+        home_dir = str(Path.home())
+        base_path = os.path.join(home_dir, 'knowledge_base')
+
+    # 创建 base_path 文件夹
+    os.makedirs(base_path, exist_ok=True)
+
+    # 检查并创建主目录 JSON 文件
+    main_json_file = os.path.join(base_path, 'main_vector_db_mapping.json')
+    if not os.path.exists(main_json_file):
+        with open(main_json_file, 'w') as f:
+            json.dump({}, f, indent=4)
+
+    # 如果 sub_folder_name 不为空，则在 base_path 内创建子文件夹
+    if sub_folder_name:
+        sub_folder_path = os.path.join(base_path, sub_folder_name)
+        os.makedirs(sub_folder_path, exist_ok=True)
+
+        # 检查并创建子目录 JSON 文件
+        sub_json_file = os.path.join(sub_folder_path, f'{sub_folder_name}_vector_id.json')
+        if not os.path.exists(sub_json_file):
+            with open(sub_json_file, 'w') as f:
+                json.dump({"vector_db_id": None, "knowledge_base_description": ""}, f, indent=4)
+
+        return sub_folder_path
+    else:
+        return base_path
+
 
 def is_folder_not_empty(knowledge_base_name):
     knowledge_library_path = os.getenv('KNOWLEDGE_LIBRARY_PATH')
