@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request, HTTPException, Depends, Body, status, Security
 from fastapi.responses import JSONResponse
 import uvicorn
+import json
 import argparse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -17,7 +18,10 @@ from MateGen.mateGenClass import (MateGenClass,
                                   create_knowledge_base,
                                   create_knowledge_base_folder,
                                   print_and_select_knowledge_base,
-                                  update_knowledge_base_description
+                                  update_knowledge_base_description,
+                                  delete_all_files,
+                                  get_latest_thread,
+                                  make_hl,
                                   )
 from utils import get_mate_gen, get_openai_instance
 from func_router import get_knowledge_bases
@@ -168,7 +172,6 @@ def mount_app_routes(app: FastAPI):
     @app.get("/api/get_all_knowledge", tags=["Knowledge"],
              summary="获取所有的本地知识库列表")
     def get_all_knowledge():
-        # kb_list = print_and_select_knowledge_base()
         try:
             knowledge_bases = print_and_select_knowledge_base()
             if not knowledge_bases:
@@ -197,11 +200,84 @@ def mount_app_routes(app: FastAPI):
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"更新失败: {str(e)}")
 
+    @app.get("/api/all_knowledge_base", tags=["Knowledge"], summary="根据向量数据库id获取到上传的所有本地文件")
+    def get_knowledge_base_all(request: KbNameRequest):
+        # 根据输入的 知识库名称，先获取到对应的 向量库id
+        vector_store_files = global_openai_instance.beta.vector_stores.files.list(
+            vector_store_id=get_vector_db_id(request.knowledge_base_name)
+        )
+
+        # 遍历列表，提取并格式化所需信息
+        formatted_files = [
+            {
+                "id": file.id,
+                "created_at": file.created_at,
+                "vector_store_id": file.vector_store_id
+            }
+            for file in vector_store_files.data
+        ]
+
+        return {"status": 200, "data": formatted_files}
+
+    @app.delete("/api/delete_all_files", tags=["Files"], summary="删除所有文件")
+    def api_delete_all_files():
+        vector_stores = global_openai_instance.beta.vector_stores.list()
+        # TODO
+        # if delete_all_files(global_openai_instance):
+        #     return {"message": "所有文件已被成功删除。"}
+        # else:
+        #     raise HTTPException(status_code=500, detail="无法删除文件，请检查日志了解更多信息。")
+
     @app.post("/api/chat", tags=["Chat"], summary="问答的通用对话接口")
     def chat(request: ChatRequest):
         try:
             response = global_instance.chat(request.question)
             return {"status": 200, "data": response['data']}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/messages", tags=["Chat"], summary="根据thread_id获取指定的会话历史信息")
+    def get_messages():
+
+        import os
+        from pathlib import Path
+
+        home_dir = str(Path.home())
+        log_dir = os.path.join(home_dir, "._logs")
+        os.makedirs(log_dir, exist_ok=True)
+        thread_log_file = os.path.join(log_dir, "thread_log.json")
+        try:
+            with open(thread_log_file, "r") as file:
+                thread_log = json.load(file)
+
+            # 用于存储每个 thread_id 对应的对话
+            all_threads_dialogues = []
+
+            # 遍历所有线程
+            if thread_log:
+                for thread in thread_log:
+                    # 获取指定 thread_id 的消息列表
+                    thread_messages = global_openai_instance.beta.threads.messages.list(thread).data
+
+                    dialogues = []  # 用于存储当前线程的对话内容
+
+                    # 遍历消息，按 role 提取文本内容
+                    for message in reversed(thread_messages):  # 反转列表处理，直接在循环中反转
+                        content_value = next((cb.text.value for cb in message.content if cb.type == 'text'), None)
+                        if content_value:
+                            if message.role == "assistant":
+                                dialogue = {"assistant": content_value}
+                            elif message.role == "user":
+                                dialogue = {"user": content_value}
+                            dialogues.append(dialogue)
+
+                    # 将当前线程的对话添加到总列表
+                    all_threads_dialogues.append({
+                        "thread_id": thread,
+                        "data": dialogues
+                    })
+
+            return {"status": 200, "data": all_threads_dialogues}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
