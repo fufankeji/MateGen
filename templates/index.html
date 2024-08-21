@@ -1,0 +1,47 @@
+<!doctype html>
+<html class="h-full bg-slate-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- install tailwindcss from cdn, don't do this for production application -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- install pyodide version 0.20.0 -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+  <!-- import codemirror stylings -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css" />
+  <!-- install codemirror.js version /5.63.3 from cdn -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/codemirror.min.js"
+  integrity="sha512-XMlgZzPyVXf1I/wbGnofk1Hfdx+zAWyZjh6c21yGo/k1zNC4Ve6xcQnTDTCHrjFGsOrVicJsBURLYktVEu/8vQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- install codemirror python language support -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"
+  integrity="sha512-/mavDpedrvPG/0Grj2Ughxte/fsm42ZmZWWpHz1jCbzd5ECv8CB7PomGtw0NAnhHmE/lkDFkRMupjoohbKNA1Q=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- import codemirror dracula theme styles from cdn -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/theme/dracula.css"/>
+  <style>
+    /* set codemirror ide height to 100% of the textarea */
+    .CodeMirror {
+      height: 100%;
+    }
+  </style>
+</head>
+<body class="h-full overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+  <p class="text-slate-200 text-3xl my-4 font-extrabold mx-2 pt-8">Run Python in your browser</p>
+  <div class="h-3/4 flex flex-row">
+    <div class="grid w-2/3 border-dashed border-2 border-slate-500 mx-2">
+      <!-- our code editor, where codemirror renders it's editor -->
+      <textarea id="code" name="code" class="h-full"></textarea>
+    </div>
+    <div class="grid w-1/3 border-dashed border-2 border-slate-500 mx-2">
+      <!-- output section where we show the stdout of the python code execution -->
+      <textarea readonly class="p-8 text-slate-200 bg-slate-900" id="output" name="output"></textarea>
+    </div>
+  </div>
+  <!-- run button to pass the code to pyodide.runPython() -->
+  <button onclick="evaluatePython()" type="button" class="mx-2 my-4 h-12 px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm bg-green-700 hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 text-slate-300">Run</button>
+  <!-- clean the output section -->
+  <button onclick="clearHistory()" type="button" class="mx-2 my-4 h-12 px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm bg-red-700 hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-700 text-slate-300">Clear History</button>
+  <script src="static/main.js"></script>
+</body>
+</html>
