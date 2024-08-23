@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="bde42758-e137-493c-b755-261d055e7961" name="fufan">
+        <fileTransfer rootFolder="/home/00_rag/fufan-chat-api" accessType="SFTP" host="192.168.110.131" port="22" sshConfigId="5c274f16-cc26-4b4b-b89a-767153a16ef1" sshConfig="root@192.168.110.131:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
