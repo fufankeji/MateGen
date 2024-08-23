@@ -1,4 +1,4 @@
-from IPython.display import display, Code, Markdown, Image
+from IPython.display import display, Markdown
 from IPython import get_ipython
 import time
 import openai
@@ -6,46 +6,31 @@ import os
 import json
 from openai import OpenAI
 from openai import OpenAIError
-import matplotlib
 import matplotlib.pyplot as plt
-import pandas as pd
 import seaborn as sns
 from datetime import datetime
 from pathlib import Path
 import oss2
-from dotenv import load_dotenv, set_key, find_dotenv
+from dotenv import load_dotenv, set_key
 import pymysql
 import io
 import uuid
 import re
-import glob
 import shutil
-import inspect
 import requests
-import random
-import string
 import base64
-from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-import base64
-from bs4 import BeautifulSoup
-import dateutil.parser as parser
 import tiktoken
 from lxml import etree
-import sys
 from cryptography.fernet import Fernet
-import numpy as np
 import pandas as pd
 import html2text
 import subprocess
-import zipfile
 import nbconvert
 from MateGen.getProfile import url1, url2, url3, url4, url5
 import logging
 
 logging.basicConfig(level=logging.INFO)
-from MateGen.config import setup_logging
+from config.config import setup_logging
 
 # 调用函数来设置日志
 setup_logging()
@@ -57,6 +42,405 @@ load_dotenv(dotenv_path)
 
 
 # print(f"dotenv_path: {dotenv_path}")
+
+
+class MateGenClass:
+    def __init__(self,
+                 api_key,
+                 thread=None,
+                 enhanced_mode=False,
+                 knowledge_base_chat=False,
+                 kaggle_competition_guidance=False,
+                 competition_name=None,
+                 knowledge_base_name=None):
+
+        """
+        初始参数解释：
+        api_key：必选参数，表示调用OpenAI模型所必须的字符串密钥，没有默认取值，需要用户提前设置才可使用MateGen。api-key获取与token购买：添加客服小可爱：littlelion_1215，回复“MG”详询哦，MateGen测试期间限时免费赠送千亿token，送完即止~
+
+        enhanced_mode：可选参数，表示是否开启增强模式，开启增强模式时，MateGen各方面性能都将大幅提高，但同时也将更快速的消耗token额度。
+
+        knowledge_base_name：可选参数，表示知识库名称，当输入字符串名称的时候，默认会开启知识库问答模式。需要注意的是，我们需要手动在知识库中放置文档，才能顺利进行知识库问答。需要注意的是，若此处输入一个Kaggle竞赛名字，并在kaggle_competition_guidance输入True，即可开启Kaggle辅导模式。MateGen会自动接入Kaggle API进行赛题信息搜索和热门Kernel搜索，并自动构建同名知识库，并开启知识库问答模式，此时并不需要手动放置文件。
+
+        kaggle_competition_guidance：可选参数，表示是否开启Kaggle辅导模式。开启Kaggle辅导模式时，需要在knowledge_base_name参数位置输入正确的Kaggle竞赛名。需要注意，只有能够顺利联网时，才可开启竞赛辅导模式。
+
+        """
+
+
+        make_hl()
+        global home_dir, log_dir, thread_log_file, token_log_file, agent_info_file, client
+        # 基础属性定义
+        self.api_key = api_key
+        self.enhanced_mode = enhanced_mode
+        self.knowledge_base_chat = knowledge_base_chat
+        self.kaggle_competition_guidance = kaggle_competition_guidance
+        self.knowledge_base_name = knowledge_base_name
+        self.competition_name = None
+        self.vector_id = None
+        self.base_path = None
+        self.knowledge_base_description = ''
+
+        original_string = decrypt_string(api_key, key=b'YAboQcXx376HSUKqzkTz8LK1GKs19Skg4JoZH4QUCJc=')
+        split_strings = original_string.split(' ')
+        s1 = split_strings[0]
+        s2 = split_strings[1]
+        initialize_agent_info(api_key=self.api_key, agent_type=s2)
+
+        base_url = os.getenv('BASE_URL')
+
+        self.client = OpenAI(api_key=s1,
+                             base_url=base_url)
+        client = self.client
+
+        logging.info("正在初始化MateGen，请稍后...")
+
+        try:
+            self.models = self.client.models.list()
+
+            if self.models:
+                logging.info("成功连接服务器，API-KEY通过验证！")
+                if get_agent_info()['api_key'] != self.api_key:
+                    logging.info("检测到API-KEY发生变化，正在重新创建Agent...")
+
+                    # TODO : 后续优化需要考虑 针对每个 api_key 建立对应的 配置文件 映射关系
+                    shutil.rmtree(log_dir)
+                    make_hl()
+                    initialize_agent_info(api_key=self.api_key, agent_type=s2)
+                    self.s3 = cre_ct(client, enhanced_mode)
+
+                    set_agent_initialized(if_initialized=True)
+                    set_agent_id(asid=self.s3)
+
+                elif not get_agent_info()['initialized']:
+                    logging.info("首次使用MateGen，正在进行Agent基础设置...")
+                    self.s3 = cre_ct(client, enhanced_mode)
+                    set_agent_initialized(if_initialized=True)
+                    set_agent_id(asid=self.s3)
+                else:
+                    self.s3 = get_agent_info()['asid']
+
+                # 存储s1和s3到本地mysql数据库中，其中s3 用来 外联 多个 thread_id 作为多会话窗口的映射
+                from MateGen.utils import (SessionLocal,
+                                           get_thread_from_db,
+                                           store_agent_info,
+                                           store_thread_info,
+                                           update_conversation_name
+                                           )
+
+
+                db_session = SessionLocal()
+                store_agent_info(db_session, self.s3)
+
+                if thread is None:
+                    # 新建一个会话
+                    thread = client.beta.threads.create()
+                    convastaion_name = 'new_chat'
+
+                    # 根据是否启用了知识库对话功能来决定运行模式
+                    run_mode = "kb" if self.knowledge_base_chat else "normal"
+                    store_thread_info(db_session, self.s3, thread.id, convastaion_name, run_mode)
+
+                    self.thread_id = thread.id
+                    log_token_usage(self.thread_id, 0)
+                    db_session.close()
+
+                else:
+                    self.thread_id = thread
+                    log_token_usage(self.thread_id, 0)
+
+                # # 获取线程ID
+                # self.thread = get_latest_thread(self.client)
+                # self.thread_id = self.thread.id
+                # log_token_usage(self.thread_id, 0)
+
+                # TODO
+                if self.kaggle_competition_guidance == True:
+                    self.competition_name = competition_name
+                    self.vector_id = get_vector_db_id(knowledge_base_name=self.competition_name)
+                    if self.vector_id != None:
+                        if self.get_knowledge_base_vsid(knowledge_base_name=self.competition_name):
+                            self.vector_id = self.get_knowledge_base_vsid(knowledge_base_name=self.competition_name)
+                            logging.info('已检测到竞赛知识库，正在开启该知识库并进行问答')
+                        else:
+                            logging.info("知识库已过期，正在重新创建知识库")
+                            self.upload_knowledge_base(knowledge_base_name=self.competition_name)
+                    else:
+                        logging.info('本地并不存在当前竞赛相关知识库，正在开启联网搜索功能，构建竞赛知识库...')
+                        self.vector_id = create_competition_knowledge_base(competition_name=self.competition_name,
+                                                                           client=self.client)
+
+                elif self.knowledge_base_chat:
+                    self.vector_id = get_vector_db_id(knowledge_base_name=self.knowledge_base_name)
+                    if self.vector_id != None:
+                        if self.get_knowledge_base_vsid(knowledge_base_name=self.knowledge_base_name):
+                            self.vector_id = self.get_knowledge_base_vsid(knowledge_base_name=self.knowledge_base_name)
+                            logging.info('知识库已存在，已启用该知识库')
+                        else:
+                            logging.info("知识库已过期，正在重新创建知识库")
+                            self.upload_knowledge_base(knowledge_base_name=self.knowledge_base_name)
+                    else:
+                        logging.info('正在创建知识库文件夹')
+                        self.base_path = create_knowledge_base_folder(sub_folder_name=self.knowledge_base_name)
+                        logging.info(f"当前问答知识库文件夹路径：{self.base_path}，请在文件夹中放置知识库文件。")
+                        logging.info("目前支持PDF、Word、PPT、md等格式读取与检索。")
+                else:
+                    if enhanced_mode:
+                        model = 'gpt-4o'
+                    else:
+                        model = 'gpt-4o-mini'
+                    asi = self.client.beta.assistants.retrieve(self.s3)
+                    instructions = asi.instructions
+                    instructions = remove_knowledge_base_info(instructions)
+                    asi = self.client.beta.assistants.update(
+                        self.s3,
+                        model=model,
+                        instructions=instructions
+                    )
+
+                if (
+                        self.kaggle_competition_guidance == True or self.knowledge_base_chat == True) and self.vector_id != None:
+                    if wait_for_vector_store_ready(vs_id=self.vector_id, client=self.client):
+                        asi = self.client.beta.assistants.retrieve(self.s3)
+                        instructions = asi.instructions
+                        instructions = remove_knowledge_base_info(instructions)
+                        knowledge_base_description = get_knowledge_base_description(
+                            sub_folder_name=self.knowledge_base_name)
+                        new_instructions = instructions + knowledge_base_description
+                        asi = self.client.beta.assistants.update(
+                            self.s3,
+                            instructions=new_instructions,
+                            tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
+                        )
+
+                logging.info("已完成初始化，MateGen可随时调用！")
+                return
+            else:
+                logging.info("当前网络环境无法连接服务器，请检查网络并稍后重试...")
+
+        except openai.AuthenticationError:
+            logging.info(
+                "API-KEY未通过验证，请添加客服小可爱微信：littlelion_1215领取限量免费测试API-KEY，或按需购买token。")
+        except openai.APIConnectionError:
+            logging.info("当前网络环境无法连接服务器，请检查网络并稍后重试...")
+        except openai.RateLimitError:
+            logging.info(
+                "API-KEY账户已达到RateLimit上限，请添加客服小可爱微信：littlelion_1215领取限量免费测试API-KEY，或按需购买token。")
+        except openai.OpenAIError as e:
+            logging.info(f"An error occurred: {e}")
+
+    def chat(self, question=None):
+
+        if self.knowledge_base_chat == True and self.vector_id == None:
+            if not is_folder_not_empty(self.base_path):
+
+                return {
+                    "data": f"知识库文件夹：{self.base_path}为空，请选择关闭知识库问答功能并继续对话，或者退出对话，在指定文件夹内放置文件之后再进行知识库问答对话。"}
+
+            else:
+                self.upload_knowledge_base(knowledge_base_name=self.knowledge_base_name)
+                if self.vector_id != None:
+                    if wait_for_vector_store_ready(vs_id=self.vector_id, client=self.client):
+                        asi = self.client.beta.assistants.retrieve(self.s3)
+                        instructions = asi.instructions
+                        instructions = remove_knowledge_base_info(instructions)
+                        knowledge_base_description = get_knowledge_base_description(
+                            sub_folder_name=self.knowledge_base_name)
+                        new_instructions = instructions + knowledge_base_description
+                        asi = self.client.beta.assistants.update(
+                            self.s3,
+                            instructions=new_instructions,
+                            tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
+                        )
+                else:
+                    return {"data": "知识库创建失败"}
+
+        if question != None:
+            from MateGen.utils import update_conversation_name
+            from MateGen.utils import (SessionLocal,
+                                       get_thread_from_db,
+                                       store_agent_info,
+                                       store_thread_info,
+                                       update_conversation_name
+                                       )
+
+            db_session = SessionLocal()
+            update_conversation_name(db_session, self.thread_id, question)
+            db_session.close()
+
+            return chat_base_auto_cancel(user_input=question,
+                                         assistant_id=self.s3,
+                                         client=self.client,
+                                         thread_id=self.thread_id,
+                                         run_id=None,
+                                         first_input=True,
+                                         tool_outputs=None)
+
+
+
+
+        else:
+            return {"data": "你好，我是MateGen，你的个人交互式编程助理，有任何问题都可以问我哦~"}
+
+    def upload_knowledge_base(self, knowledge_base_name=None):
+        if knowledge_base_name != None:
+            self.knowledge_base_name = knowledge_base_name
+        elif self.knowledge_base_name == None:
+            self.knowledge_base_name = input("请输入需要更新的知识库名称：")
+
+        if not is_folder_not_empty(self.knowledge_base_name):
+            print(f"知识库文件夹：{self.knowledge_base_name}为空，请先放置文件再更新知识库。")
+            return None
+        else:
+            self.vector_id = create_knowledge_base(self.client, self.knowledge_base_name)
+            if self.vector_id != None:
+                print(f"已成功更新知识库{self.knowledge_base_name}")
+
+    def update_knowledge_base(self):
+        knowledge_base_name, vector_id = print_and_select_knowledge_base_to_update()
+        if knowledge_base_name != None:
+            self.upload_knowledge_base(knowledge_base_name=knowledge_base_name)
+
+    def get_knowledge_base_vsid(self, knowledge_base_name=None):
+        if knowledge_base_name != None:
+            self.knowledge_base_name = knowledge_base_name
+        elif self.knowledge_base_name == None:
+            self.knowledge_base_name = input("请输入需要获取知识库ID的知识库名称：")
+
+        knowledge_base_name = self.knowledge_base_name + '!!' + self.client.api_key[8:]
+        check_res = check_knowledge_base_name(client=self.client,
+                                              knowledge_base_name=knowledge_base_name)
+
+        if check_res == None:
+            print("知识库尚未创建或已经过期，请重新创建知识库。")
+            return None
+        else:
+            return check_res
+
+    def set_knowledge_base_url(self, base_url):
+        if self.is_valid_directory(base_url):
+            # knowledge_library_path = os.getenv('KNOWLEDGE_LIBRARY_PATH')
+            # 检查 KNOWLEDGE_LIBRARY_PATH 是否存在且路径是否有效
+            # if knowledge_library_path and os.path.exists(knowledge_library_path):
+            # base_path = os.path.join(knowledge_library_path, 'knowledge_base')
+            # else:
+            # 如果 KNOWLEDGE_LIBRARY_PATH 不存在或路径无效，则在 home 目录下创建文件夹
+            # home_dir = str(Path.home())
+            # base_path = os.path.join(home_dir, 'knowledge_base')
+            # os.makedirs(base_path, exist_ok=True)
+            # res = move_folder(base_path, base_url)
+            # if res:
+            set_key(dotenv_path, 'KNOWLEDGE_LIBRARY_PATH', base_url)
+            return True
+            # else:
+            # pass
+        else:
+            return False
+
+    def set_base_url(self, base_url):
+        if self.is_valid_base_url(base_url):
+            set_key(dotenv_path, 'BASE_URL', base_url)
+            print(f"更新后base_url地址：{base_url}")
+        else:
+            print(f"无效的base_url地址：{base_url}")
+
+    def is_valid_base_url(self, path):
+        original_string = decrypt_string(self.api_key, key=b'YAboQcXx376HSUKqzkTz8LK1GKs19Skg4JoZH4QUCJc=')
+        split_strings = original_string.split(' ')
+        s1 = split_strings[0]
+        client_tmp = OpenAI(api_key=s1,
+                            base_url=path)
+
+        models_tmp = client_tmp.models.list()
+        return models_tmp
+
+    def is_valid_directory(self, path):
+        """
+        检查路径是否为有效的目录路径
+        """
+        # 检查路径是否为绝对路径
+        if not os.path.isabs(path):
+            return False
+
+        # 检查路径是否存在且为目录
+        if not os.path.isdir(path):
+            return False
+
+        return True
+
+    def write_knowledge_base_description(self, description):
+        """
+        更新知识库描述
+        """
+        self.knowledge_base_description = description
+        update_knowledge_base_description(self.knowledge_base_name,
+                                          self.knowledge_base_description)
+
+    def debug(self):
+        res = input(
+            '注意：debug功能只能捕获上一个cell运行报错结果，且只有MateGen模块与当前代码环境命名变量一致时，debug功能才能顺利运行。其他情况下请手动复制代码和报错信息，并通过chat方法将信息输入给MateGen，MateGen可以据此进行更加准确的debug。是否继续使用debug功能：1.继续；2.退出')
+        if res == '1':
+            current_globals = globals()
+
+            ipython = get_ipython()
+            history = list(ipython.history_manager.get_range())
+
+            if not history:
+                print("没有历史代码记录，无法启动自动debug功能。")
+            else:
+                last_session, last_line_number, last_cell_code = history[-2]
+                try:
+                    exec(last_cell_code, current_globals)
+                except Exception as e:
+                    error_info = str(e)
+                    user_input = f"你好，我的代码运行报错了，请你帮我检查代码并为我解释报错原因。代码：{last_cell_code}，报错信息{error_info}"
+                    chat_base_auto_cancel(user_input=user_input,
+                                          assistant_id=self.s3,
+                                          client=self.client,
+                                          thread_id=self.thread_id,
+                                          run_id=None,
+                                          first_input=True,
+                                          tool_outputs=None)
+        else:
+            print("请调用MateGen的chat功能，并手动复制报错代码和报错信息，以便进行精准debug哦~。")
+
+    def clear_messages(self):
+        client.beta.threads.delete(thread_id=self.thread_id)
+        thread = client.beta.threads.create()
+        self.thread = thread
+        self.thread_id = thread.id
+        log_thread_id(self.thread_id)
+        print("已经清理历史消息")
+
+    def reset(self):
+        try:
+            home_dir = str(Path.home())
+            log_dir = os.path.join(home_dir, "._logs")
+            shutil.rmtree(log_dir)
+            print("已重置成功！请重新创建MateGen并继续使用。")
+
+        except Exception as e:
+            print("重置失败，请重启代码环境，并确认API-KEY后再尝试重置。")
+
+    def reset_account_info(self):
+        res = input("账户重置功能将重置全部知识库在线存储文档、词向量数据库和已创建的Agent，是否继续：1.继续；2.退出。")
+        if res == '1':
+            print("正在重置账户各项信息...")
+            print("正在删除在线知识库中全部文档文档...")
+            delete_all_files(self.client)
+            print("正在删除知识库的词向量存储...")
+            delete_all_vector_stores(self.client)
+            print("正在删除已创建的Agent")
+            delete_all_assistants(self.client)
+            print("正在重置Agent信息")
+            self.reset()
+            print("已重置成功重置账户！请重新创建MateGen并继续使用。")
+        else:
+            return None
+
+    def print_usage(self):
+        print_token_usage()
+        print("本地token计数可能有误，token消耗实际情况以服务器数据为准哦~")
+
 
 def ensure_file_exists(file_path, timeout=10):
     """
@@ -940,352 +1324,6 @@ def print_and_select_knowledge_base_to_update():
                 print("无效的选择。请再试一次。")
         except ValueError:
             print("请输入一个有效的序号。")
-
-
-class MateGenClass:
-    def __init__(self,
-                 api_key,
-                 enhanced_mode=False,
-                 knowledge_base_chat=False,
-                 kaggle_competition_guidance=False,
-                 competition_name=None,
-                 knowledge_base_name=None):
-
-        """
-        初始参数解释：
-        api_key：必选参数，表示调用OpenAI模型所必须的字符串密钥，没有默认取值，需要用户提前设置才可使用MateGen。api-key获取与token购买：添加客服小可爱：littlelion_1215，回复“MG”详询哦，MateGen测试期间限时免费赠送千亿token，送完即止~
-
-        enhanced_mode：可选参数，表示是否开启增强模式，开启增强模式时，MateGen各方面性能都将大幅提高，但同时也将更快速的消耗token额度。
-
-        knowledge_base_name：可选参数，表示知识库名称，当输入字符串名称的时候，默认会开启知识库问答模式。需要注意的是，我们需要手动在知识库中放置文档，才能顺利进行知识库问答。需要注意的是，若此处输入一个Kaggle竞赛名字，并在kaggle_competition_guidance输入True，即可开启Kaggle辅导模式。MateGen会自动接入Kaggle API进行赛题信息搜索和热门Kernel搜索，并自动构建同名知识库，并开启知识库问答模式，此时并不需要手动放置文件。
-
-        kaggle_competition_guidance：可选参数，表示是否开启Kaggle辅导模式。开启Kaggle辅导模式时，需要在knowledge_base_name参数位置输入正确的Kaggle竞赛名。需要注意，只有能够顺利联网时，才可开启竞赛辅导模式。
-
-        """
-        make_hl()
-        global home_dir, log_dir, thread_log_file, token_log_file, agent_info_file, client
-        # 基础属性定义
-        self.api_key = api_key
-        self.enhanced_mode = enhanced_mode
-        self.knowledge_base_chat = knowledge_base_chat
-        self.kaggle_competition_guidance = kaggle_competition_guidance
-        self.knowledge_base_name = knowledge_base_name
-        self.competition_name = None
-        self.vector_id = None
-        self.base_path = None
-        self.knowledge_base_description = ''
-
-        original_string = decrypt_string(api_key, key=b'YAboQcXx376HSUKqzkTz8LK1GKs19Skg4JoZH4QUCJc=')
-        split_strings = original_string.split(' ')
-        s1 = split_strings[0]
-        s2 = split_strings[1]
-
-        initialize_agent_info(api_key=self.api_key, agent_type=s2)
-
-        base_url = os.getenv('BASE_URL')
-        self.client = OpenAI(api_key=s1,
-                             base_url=base_url)
-        client = self.client
-
-        logging.info("正在初始化MateGen，请稍后...")
-        try:
-            self.models = self.client.models.list()
-
-            if self.models:
-                logging.info("成功连接服务器，API-KEY通过验证！")
-                if get_agent_info()['api_key'] != self.api_key:
-                    logging.info("检测到API-KEY发生变化，正在重新创建Agent...")
-                    shutil.rmtree(log_dir)
-                    make_hl()
-                    initialize_agent_info(api_key=self.api_key, agent_type=s2)
-                    self.s3 = cre_ct(client, enhanced_mode)
-                    set_agent_initialized(if_initialized=True)
-                    set_agent_id(asid=self.s3)
-
-                elif not get_agent_info()['initialized']:
-                    logging.info("首次使用MateGen，正在进行Agent基础设置...")
-                    self.s3 = cre_ct(client, enhanced_mode)
-                    set_agent_initialized(if_initialized=True)
-                    set_agent_id(asid=self.s3)
-                else:
-                    self.s3 = get_agent_info()['asid']
-
-                self.thread = get_latest_thread(self.client)
-                self.thread_id = self.thread.id
-                log_token_usage(self.thread_id, 0)
-
-                # TODO
-                if self.kaggle_competition_guidance == True:
-                    self.competition_name = competition_name
-                    self.vector_id = get_vector_db_id(knowledge_base_name=self.competition_name)
-                    if self.vector_id != None:
-                        if self.get_knowledge_base_vsid(knowledge_base_name=self.competition_name):
-                            self.vector_id = self.get_knowledge_base_vsid(knowledge_base_name=self.competition_name)
-                            logging.info('已检测到竞赛知识库，正在开启该知识库并进行问答')
-                        else:
-                            logging.info("知识库已过期，正在重新创建知识库")
-                            self.upload_knowledge_base(knowledge_base_name=self.competition_name)
-                    else:
-                        logging.info('本地并不存在当前竞赛相关知识库，正在开启联网搜索功能，构建竞赛知识库...')
-                        self.vector_id = create_competition_knowledge_base(competition_name=self.competition_name,
-                                                                           client=self.client)
-
-                elif self.knowledge_base_chat:
-                    self.vector_id = get_vector_db_id(knowledge_base_name=self.knowledge_base_name)
-                    if self.vector_id != None:
-                        if self.get_knowledge_base_vsid(knowledge_base_name=self.knowledge_base_name):
-                            self.vector_id = self.get_knowledge_base_vsid(knowledge_base_name=self.knowledge_base_name)
-                            logging.info('知识库已存在，已启用该知识库')
-                        else:
-                            logging.info("知识库已过期，正在重新创建知识库")
-                            self.upload_knowledge_base(knowledge_base_name=self.knowledge_base_name)
-                    else:
-                        logging.info('正在创建知识库文件夹')
-                        self.base_path = create_knowledge_base_folder(sub_folder_name=self.knowledge_base_name)
-                        logging.info(f"当前问答知识库文件夹路径：{self.base_path}，请在文件夹中放置知识库文件。")
-                        logging.info("目前支持PDF、Word、PPT、md等格式读取与检索。")
-                else:
-                    if enhanced_mode:
-                        model = 'gpt-4o'
-                    else:
-                        model = 'gpt-4o-mini'
-                    asi = self.client.beta.assistants.retrieve(self.s3)
-                    instructions = asi.instructions
-                    instructions = remove_knowledge_base_info(instructions)
-                    asi = self.client.beta.assistants.update(
-                        self.s3,
-                        model=model,
-                        instructions=instructions
-                    )
-
-                if (
-                        self.kaggle_competition_guidance == True or self.knowledge_base_chat == True) and self.vector_id != None:
-                    if wait_for_vector_store_ready(vs_id=self.vector_id, client=self.client):
-                        asi = self.client.beta.assistants.retrieve(self.s3)
-                        instructions = asi.instructions
-                        instructions = remove_knowledge_base_info(instructions)
-                        knowledge_base_description = get_knowledge_base_description(
-                            sub_folder_name=self.knowledge_base_name)
-                        new_instructions = instructions + knowledge_base_description
-                        asi = self.client.beta.assistants.update(
-                            self.s3,
-                            instructions=new_instructions,
-                            tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
-                        )
-
-                logging.info("已完成初始化，MateGen可随时调用！")
-                return
-            else:
-                logging.info("当前网络环境无法连接服务器，请检查网络并稍后重试...")
-
-        except openai.AuthenticationError:
-            logging.info(
-                "API-KEY未通过验证，请添加客服小可爱微信：littlelion_1215领取限量免费测试API-KEY，或按需购买token。")
-        except openai.APIConnectionError:
-            logging.info("当前网络环境无法连接服务器，请检查网络并稍后重试...")
-        except openai.RateLimitError:
-            logging.info(
-                "API-KEY账户已达到RateLimit上限，请添加客服小可爱微信：littlelion_1215领取限量免费测试API-KEY，或按需购买token。")
-        except openai.OpenAIError as e:
-            logging.info(f"An error occurred: {e}")
-
-    def chat(self, question=None):
-
-        if self.knowledge_base_chat == True and self.vector_id == None:
-            if not is_folder_not_empty(self.base_path):
-
-                return {
-                    "data": f"知识库文件夹：{self.base_path}为空，请选择关闭知识库问答功能并继续对话，或者退出对话，在指定文件夹内放置文件之后再进行知识库问答对话。"}
-
-            else:
-                self.upload_knowledge_base(knowledge_base_name=self.knowledge_base_name)
-                if self.vector_id != None:
-                    if wait_for_vector_store_ready(vs_id=self.vector_id, client=self.client):
-                        asi = self.client.beta.assistants.retrieve(self.s3)
-                        instructions = asi.instructions
-                        instructions = remove_knowledge_base_info(instructions)
-                        knowledge_base_description = get_knowledge_base_description(
-                            sub_folder_name=self.knowledge_base_name)
-                        new_instructions = instructions + knowledge_base_description
-                        asi = self.client.beta.assistants.update(
-                            self.s3,
-                            instructions=new_instructions,
-                            tool_resources={"file_search": {"vector_store_ids": [self.vector_id]}}
-                        )
-                else:
-                    return {"data": "知识库创建失败"}
-
-        if question != None:
-            return chat_base_auto_cancel(user_input=question,
-                                         assistant_id=self.s3,
-                                         client=self.client,
-                                         thread_id=self.thread_id,
-                                         run_id=None,
-                                         first_input=True,
-                                         tool_outputs=None)
-
-        else:
-            return {"data": "你好，我是MateGen，你的个人交互式编程助理，有任何问题都可以问我哦~"}
-
-    def upload_knowledge_base(self, knowledge_base_name=None):
-        if knowledge_base_name != None:
-            self.knowledge_base_name = knowledge_base_name
-        elif self.knowledge_base_name == None:
-            self.knowledge_base_name = input("请输入需要更新的知识库名称：")
-
-        if not is_folder_not_empty(self.knowledge_base_name):
-            print(f"知识库文件夹：{self.knowledge_base_name}为空，请先放置文件再更新知识库。")
-            return None
-        else:
-            self.vector_id = create_knowledge_base(self.client, self.knowledge_base_name)
-            if self.vector_id != None:
-                print(f"已成功更新知识库{self.knowledge_base_name}")
-
-    def update_knowledge_base(self):
-        knowledge_base_name, vector_id = print_and_select_knowledge_base_to_update()
-        if knowledge_base_name != None:
-            self.upload_knowledge_base(knowledge_base_name=knowledge_base_name)
-
-    def get_knowledge_base_vsid(self, knowledge_base_name=None):
-        if knowledge_base_name != None:
-            self.knowledge_base_name = knowledge_base_name
-        elif self.knowledge_base_name == None:
-            self.knowledge_base_name = input("请输入需要获取知识库ID的知识库名称：")
-
-        knowledge_base_name = self.knowledge_base_name + '!!' + self.client.api_key[8:]
-        check_res = check_knowledge_base_name(client=self.client,
-                                              knowledge_base_name=knowledge_base_name)
-
-        if check_res == None:
-            print("知识库尚未创建或已经过期，请重新创建知识库。")
-            return None
-        else:
-            return check_res
-
-    def set_knowledge_base_url(self, base_url):
-        if self.is_valid_directory(base_url):
-            # knowledge_library_path = os.getenv('KNOWLEDGE_LIBRARY_PATH')
-            # 检查 KNOWLEDGE_LIBRARY_PATH 是否存在且路径是否有效
-            # if knowledge_library_path and os.path.exists(knowledge_library_path):
-            # base_path = os.path.join(knowledge_library_path, 'knowledge_base')
-            # else:
-            # 如果 KNOWLEDGE_LIBRARY_PATH 不存在或路径无效，则在 home 目录下创建文件夹
-            # home_dir = str(Path.home())
-            # base_path = os.path.join(home_dir, 'knowledge_base')
-            # os.makedirs(base_path, exist_ok=True)
-            # res = move_folder(base_path, base_url)
-            # if res:
-            set_key(dotenv_path, 'KNOWLEDGE_LIBRARY_PATH', base_url)
-            return True
-            # else:
-            # pass
-        else:
-            return False
-
-    def set_base_url(self, base_url):
-        if self.is_valid_base_url(base_url):
-            set_key(dotenv_path, 'BASE_URL', base_url)
-            print(f"更新后base_url地址：{base_url}")
-        else:
-            print(f"无效的base_url地址：{base_url}")
-
-    def is_valid_base_url(self, path):
-        original_string = decrypt_string(self.api_key, key=b'YAboQcXx376HSUKqzkTz8LK1GKs19Skg4JoZH4QUCJc=')
-        split_strings = original_string.split(' ')
-        s1 = split_strings[0]
-        client_tmp = OpenAI(api_key=s1,
-                            base_url=path)
-
-        models_tmp = client_tmp.models.list()
-        return models_tmp
-
-    def is_valid_directory(self, path):
-        """
-        检查路径是否为有效的目录路径
-        """
-        # 检查路径是否为绝对路径
-        if not os.path.isabs(path):
-            return False
-
-        # 检查路径是否存在且为目录
-        if not os.path.isdir(path):
-            return False
-
-        return True
-
-    def write_knowledge_base_description(self, description):
-        """
-        更新知识库描述
-        """
-        self.knowledge_base_description = description
-        update_knowledge_base_description(self.knowledge_base_name,
-                                          self.knowledge_base_description)
-
-    def debug(self):
-        res = input(
-            '注意：debug功能只能捕获上一个cell运行报错结果，且只有MateGen模块与当前代码环境命名变量一致时，debug功能才能顺利运行。其他情况下请手动复制代码和报错信息，并通过chat方法将信息输入给MateGen，MateGen可以据此进行更加准确的debug。是否继续使用debug功能：1.继续；2.退出')
-        if res == '1':
-            current_globals = globals()
-
-            ipython = get_ipython()
-            history = list(ipython.history_manager.get_range())
-
-            if not history:
-                print("没有历史代码记录，无法启动自动debug功能。")
-            else:
-                last_session, last_line_number, last_cell_code = history[-2]
-                try:
-                    exec(last_cell_code, current_globals)
-                except Exception as e:
-                    error_info = str(e)
-                    user_input = f"你好，我的代码运行报错了，请你帮我检查代码并为我解释报错原因。代码：{last_cell_code}，报错信息{error_info}"
-                    chat_base_auto_cancel(user_input=user_input,
-                                          assistant_id=self.s3,
-                                          client=self.client,
-                                          thread_id=self.thread_id,
-                                          run_id=None,
-                                          first_input=True,
-                                          tool_outputs=None)
-        else:
-            print("请调用MateGen的chat功能，并手动复制报错代码和报错信息，以便进行精准debug哦~。")
-
-    def clear_messages(self):
-        client.beta.threads.delete(thread_id=self.thread_id)
-        thread = client.beta.threads.create()
-        self.thread = thread
-        self.thread_id = thread.id
-        log_thread_id(self.thread_id)
-        print("已经清理历史消息")
-
-    def reset(self):
-        try:
-            home_dir = str(Path.home())
-            log_dir = os.path.join(home_dir, "._logs")
-            shutil.rmtree(log_dir)
-            print("已重置成功！请重新创建MateGen并继续使用。")
-
-        except Exception as e:
-            print("重置失败，请重启代码环境，并确认API-KEY后再尝试重置。")
-
-    def reset_account_info(self):
-        res = input("账户重置功能将重置全部知识库在线存储文档、词向量数据库和已创建的Agent，是否继续：1.继续；2.退出。")
-        if res == '1':
-            print("正在重置账户各项信息...")
-            print("正在删除在线知识库中全部文档文档...")
-            delete_all_files(self.client)
-            print("正在删除知识库的词向量存储...")
-            delete_all_vector_stores(self.client)
-            print("正在删除已创建的Agent")
-            delete_all_assistants(self.client)
-            print("正在重置Agent信息")
-            self.reset()
-            print("已重置成功重置账户！请重新创建MateGen并继续使用。")
-        else:
-            return None
-
-    def print_usage(self):
-        print_token_usage()
-        print("本地token计数可能有误，token消耗实际情况以服务器数据为准哦~")
 
 
 def get_id(keyword):

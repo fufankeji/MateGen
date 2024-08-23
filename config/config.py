@@ -20,3 +20,12 @@ def setup_logging():
     # 给logger添加handler
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
+
+
+
+username = 'root'
+hostname = '192.168.110.131'
+database_name = 'mategen'
+password = "snowball950123"
+
+SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{username}:{password}@{hostname}/{database_name}?charset=utf8mb4"

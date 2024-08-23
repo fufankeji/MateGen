@@ -8,6 +8,7 @@ import uvicorn
 import json
 import argparse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine, text
 from pydantic import BaseModel
 from fastapi import Depends, Query
 from fastapi.security import APIKeyHeader
@@ -23,7 +24,7 @@ from MateGen.mateGenClass import (MateGenClass,
                                   get_latest_thread,
                                   make_hl,
                                   )
-from utils import get_mate_gen, get_openai_instance
+from init_interface import get_mate_gen, get_openai_instance
 from func_router import get_knowledge_bases
 from pytanic_router import KbNameRequest
 
@@ -48,6 +49,16 @@ class KnowledgeBaseCreateRequest(BaseModel):
 class KnowledgeBaseDescriptionUpdateRequest(BaseModel):
     sub_folder_name: str
     description: str
+
+
+class CodeExecutionRequest(BaseModel):
+    python_code: str
+    thread_id: str
+
+
+class SQLExecutionRequest(BaseModel):
+    sql_query: str
+    thread_id: str
 
 
 def create_app():
@@ -80,9 +91,20 @@ def mount_app_routes(app: FastAPI):
     3.
     """
 
+    # 初始化API，单独做以解决 API_KEY 加密问题
+    @app.post("/api/set_api_key", tags=["Initialization"], summary="授权有效的API Key")
+    def save_api_key(api_key: str = Body(..., description="API key required for operation", embed=True), ):
+        from MateGen.utils import SessionLocal, insert_agent_with_fixed_id
+        db_session = SessionLocal()
+        try:
+            insert_agent_with_fixed_id(db_session, api_key)
+            return {"status": 200, "data": {"message": "API Key 已生效"}}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
     # 初始化MetaGen实例，保存在全局变量中，用于后续的子方法调用
     @app.post("/api/initialize", tags=["Initialization"],
-              summary="用于普通问答的 MateGen 实例初始化")
+              summary="用于普通问答的 MateGen 实例初始化 (用于新建对话)")
     def initialize_mate_gen(mate_gen: MateGenClass = Depends(get_mate_gen),
                             openai_ins: OpenAI = Depends(get_openai_instance)):
         try:
@@ -91,27 +113,72 @@ def mount_app_routes(app: FastAPI):
             global_openai_instance = openai_ins
 
             # 这里根据初始化结果返回相应的信息
-            return {"status": 200, "data": "MateGen 实例初始化成功"}
+            return {"status": 200, "data": {"message": "MateGen 实例初始化成功"}}
         except Exception as e:
 
             raise HTTPException(status_code=500, detail=str(e))
 
     # 定义知识库对话（即如果勾选了知识库对话按钮后，重新实例化 MateGen 实例）
+    @app.get("/api/reinitialize", tags=["Initialization"],
+             summary="重新实例化MateGen类 (基于特定线程ID)")
+    def reinitialize_mate_gen(
+            thread_id: str = Query(..., description="Thread ID required for reinitialization"),
+    ):
+
+        global global_instance, global_openai_instance
+
+        from MateGen.utils import SessionLocal, fetch_latest_api_key, fetch_run_mode_by_thread_id
+        db_session = SessionLocal()
+
+        run_mode = fetch_run_mode_by_thread_id(db_session, thread_id)
+        try:
+            api_key = fetch_latest_api_key(db_session)
+
+            if run_mode == "normal":
+                mate_gen_instance = MateGenClass(
+                    thread=thread_id,
+                    api_key=api_key
+                )
+                global_instance = mate_gen_instance
+                return {"status": 200,
+                        "data": {"message": "MateGen 实例根据指定线程重新初始化成功", "thread_id": thread_id}}
+            else:
+
+                # 默认选择第一个知识库
+                knowledge_bases = print_and_select_knowledge_base()[-1]["name"]
+                mate_gen_instance = MateGenClass(
+                    thread=thread_id,
+                    api_key=api_key,
+                    knowledge_base_chat=True,
+                    knowledge_base_name=knowledge_bases
+                )
+
+                global_instance = mate_gen_instance
+                return {"status": 200,
+                        "data": {"message": "MateGen 实例根据指定线程重新初始化成功", "thread_id": thread_id,
+                                 "kb_info": {knowledge_bases}}}
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
     @app.post("/api/knowledge_initialize", tags=["Initialization"],
               summary="用于开启知识库问答的 MateGen 实例初始化")
     def initialize_knowledge_mate_gen(
-            api_key: str = Body(..., description="API key required for operation"),
             knowledge_base_chat: bool = Body(..., description="Enable knowledge base chat"),
             knowledge_base_name: str = Body(..., description="Name of the knowledge base if chat is enabled"),
-            openai_ins: OpenAI = Depends(get_openai_instance)
     ):
+
+        global global_instance, global_openai_instance
+        from MateGen.utils import SessionLocal, fetch_latest_api_key
+        db_session = SessionLocal()
+
         try:
-            global global_instance, global_openai_instance
-            mate_gen = get_mate_gen(api_key, False, knowledge_base_chat, False, None, knowledge_base_name)
+            api_key = fetch_latest_api_key(db_session)
+
+            mate_gen = get_mate_gen(api_key, None, False, knowledge_base_chat, False, None, knowledge_base_name)
             global_instance = mate_gen
-            global_openai_instance = openai_ins
             # 这里根据初始化结果返回相应的信息
-            return {"status": 200, "data": "MateGen 实例初始化成功"}
+            return {"status": 200, "data": {"message": "MateGen 实例初始化成功", "kb_info": knowledge_base_name}}
         except Exception as e:
 
             raise HTTPException(status_code=500, detail=str(e))
@@ -142,10 +209,13 @@ def mount_app_routes(app: FastAPI):
     @app.post("/api/set_knowledge_base_url", tags=["Knowledge"],
               summary="设置本地知识库的根目录")
     def set_base_url(url_data: UrlModel):
+
         # 因为Json会转义 \ , 这里手动进行转换
         corrected_path = url_data.url.replace('\\', '\\\\')
-        if global_instance.set_knowledge_base_url(corrected_path):
-            return {"status": 200, "data": {"knowledge_base_url": url_data.url}}
+        if global_instance.set_knowledge_base_url(url_data.url):
+
+            return {"status": 200, "data": {"message": f"知识库路径已更新为:{corrected_path}",
+                                            "knowledge_base_url": url_data.url}}
         else:
             raise HTTPException(status_code=400, detail="无效的知识库地址，正确的路径实例：E:\\work")
 
@@ -232,54 +302,124 @@ def mount_app_routes(app: FastAPI):
     def chat(request: ChatRequest):
         try:
             response = global_instance.chat(request.question)
-            return {"status": 200, "data": response['data']}
+            return {"status": 200, "data": {"message": response['data']}}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/agent_id", tags=["Chat"], summary="获取系统唯一的Assis id")
+    def get_conversation():
+        from MateGen.utils import SessionLocal, fetch_latest_agent_id
+
+        db_session = SessionLocal()
+        try:
+            data = fetch_latest_agent_id(db_session)
+            return {"status": 200, "data": {"message": data}}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/conversation", tags=["Chat"], summary="获取指定代理的所有历史对话窗口")
+    def get_conversation(agent_id: str = Query(..., description="assis id")):
+        from MateGen.utils import SessionLocal, fetch_threads_by_agent
+
+        db_session = SessionLocal()
+        try:
+            data = fetch_threads_by_agent(db_session, agent_id)
+            return {"status": 200, "data": {"message": data}}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
     @app.get("/api/messages", tags=["Chat"], summary="根据thread_id获取指定的会话历史信息")
-    def get_messages():
+    def get_messages(thread_id: str = Query(..., description="thread_id")):
 
-        import os
-        from pathlib import Path
-
-        home_dir = str(Path.home())
-        log_dir = os.path.join(home_dir, "._logs")
-        os.makedirs(log_dir, exist_ok=True)
-        thread_log_file = os.path.join(log_dir, "thread_log.json")
         try:
-            with open(thread_log_file, "r") as file:
-                thread_log = json.load(file)
+            thread_messages = global_openai_instance.beta.threads.messages.list(thread_id).data
 
-            # 用于存储每个 thread_id 对应的对话
-            all_threads_dialogues = []
+            dialogues = []  # 用于存储当前线程的对话内容
 
-            # 遍历所有线程
-            if thread_log:
-                for thread in thread_log:
-                    # 获取指定 thread_id 的消息列表
-                    thread_messages = global_openai_instance.beta.threads.messages.list(thread).data
+            # 遍历消息，按 role 提取文本内容
+            for message in reversed(thread_messages):  # 反转列表处理，直接在循环中反转
+                content_value = next((cb.text.value for cb in message.content if cb.type == 'text'), None)
+                if content_value:
+                    if message.role == "assistant":
+                        dialogue = {"assistant": content_value}
+                    elif message.role == "user":
+                        dialogue = {"user": content_value}
 
-                    dialogues = []  # 用于存储当前线程的对话内容
+                    dialogues.append(dialogue)
 
-                    # 遍历消息，按 role 提取文本内容
-                    for message in reversed(thread_messages):  # 反转列表处理，直接在循环中反转
-                        content_value = next((cb.text.value for cb in message.content if cb.type == 'text'), None)
-                        if content_value:
-                            if message.role == "assistant":
-                                dialogue = {"assistant": content_value}
-                            elif message.role == "user":
-                                dialogue = {"user": content_value}
-                            dialogues.append(dialogue)
+            return {"status": 200, "data": {"message": dialogues}}
 
-                    # 将当前线程的对话添加到总列表
-                    all_threads_dialogues.append({
-                        "thread_id": thread,
-                        "data": dialogues
-                    })
-
-            return {"status": 200, "data": all_threads_dialogues}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+    @app.put("/api/update_conversation_name", tags=["Chat"], summary="根据thread_id更新会话框的名称")
+    def update_conversation_name(thread_id: str = Body(..., description="thread_id"),
+                                 new_conversation_name: str = Body(..., description="thread_id")):
+        from MateGen.utils import SessionLocal, update_conversation_name
+
+        db_session = SessionLocal()
+        try:
+            update_conversation_name(db_session, thread_id, new_conversation_name)
+            return {"status": 200, "data": {"message": "已更新"}}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    from db_interface import create_database_connection, DBConfig
+    @app.post("/api/create_db_connection", tags=["Database"],
+              summary="创建数据库连接，如果连接成功，返回所有数据库及对应的表名")
+    def db_connection(db_config: DBConfig = Body(...)):
+        try:
+            result = create_database_connection(db_config)
+            return {"status": 200, "data": {"message": result}}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    from python_interface import execute_python_code
+    @app.post("/api/execute_code", tags=["Execution"],
+              summary="从指定会话窗口跳转到Python环境并执行代码")
+    def execute_code(request: CodeExecutionRequest = Body(...)):
+
+        # 检查thread_id是否提供
+        if not request.thread_id:
+            raise HTTPException(status_code=400, detail="thread_id is required to execute the code.")
+
+        try:
+            result = execute_python_code(request.python_code)
+            return {"status": 200, "data": {"thread_id": request.thread_id, "message": result}}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"An error occurred while executing the code: {str(e)}")
+
+    @app.post("/api/execute_sql", tags=["SQL Execution"], summary="执行SQL语句并返回最终的结果")
+    def execute_sql(request: SQLExecutionRequest = Body(...)):
+
+        if not request.thread_id:
+            raise HTTPException(status_code=400, detail="thread_id is required to execute the code.")
+
+        try:
+            from MateGen.utils import SessionLocal
+
+            db_session = SessionLocal()
+
+            # 确保只执行SELECT查询
+            if not request.sql_query.lower().startswith("select"):
+                raise HTTPException(status_code=400, detail="Only SELECT queries are allowed.")
+
+            result = db_session.execute(text(request.sql_query))
+            results = result.fetchall()
+
+            # 转换结果为字典列表
+            output = []
+            column_names = [col[0] for col in result.keys()]
+            header = " | ".join(column_names)
+            output.append(header)  # 首先添加头部，即列名
+
+            for row in results:
+                row_str = " | ".join(str(value) for value in row)
+                output.append(row_str)
+
+            return {"results": output}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"An error occurred while executing SQL: {str(e)}")
 
 
 def run_api(host, port, **kwargs):

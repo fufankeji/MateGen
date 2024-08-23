@@ -17,3 +17,4 @@ nbconvert==7.16.4
 
 fastapi==0.112.1
 uvicorn==0.30.6
+sqlalchemy==2.0.32

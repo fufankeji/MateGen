@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException, Depends, Body
 import os
 from MateGen.mateGenClass import MateGenClass
-from utils import get_mate_gen
+from init_interface import get_mate_gen
 from pathlib import Path
 import json
 
