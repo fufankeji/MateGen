@@ -5,6 +5,7 @@ from fastapi import HTTPException, Body
 from sqlalchemy.exc import SQLAlchemyError
 from pydantic import BaseModel
 from sqlalchemy import create_engine, text
+import logging
 
 """
 官方文档：https://docs.sqlalchemy.org/en/20/dialects/mysql.html
@@ -66,7 +67,5 @@ def create_database_connection(db_config: DBConfig):
     except Exception as e:
         session.close()
         raise Exception(f"连接失败，错误: {str(e)}")
-
-
 
 

@@ -30,7 +30,7 @@ def get_mate_gen(
     :return:
     """
     # 从数据库中获取 API_KEY
-    from MateGen.utils import SessionLocal, fetch_latest_api_key, fetch_run_mode_by_thread_id
+    from MateGen.utils import SessionLocal, fetch_latest_api_key
     db_session = SessionLocal()
 
     api_key = fetch_latest_api_key(db_session)

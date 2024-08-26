@@ -43,6 +43,9 @@ class UrlModel(BaseModel):
 
 class KnowledgeBaseCreateRequest(BaseModel):
     knowledge_base_name: str
+    chunking_strategy: str = "auto"
+    max_chunk_size_tokens: int = 800
+    chunk_overlap_tokens: int = 400
     folder_path_base: str = None  # 可选字段
 
 
@@ -91,14 +94,46 @@ def mount_app_routes(app: FastAPI):
     3.
     """
 
+    @app.get("/api/check_initialization", tags=["Initialization"],
+             summary="检查当前用户是否第一次启动项目，如果是，跳转到项目初始化页面")
+    def check_database_initialization():
+        """
+        检查数据库是否已初始化并根据需要进行初始化。
+        """
+        from MateGen.utils import SessionLocal, check_and_initialize_db
+
+        db_session = SessionLocal()
+
+        # 如果数据表结构不为空，则直接进入对话模型，不需要进行初始化
+        if check_and_initialize_db(db_session) == '':
+            return {"status": 500,
+                    "data": {"message": "当前用户初次启动项目，请跳转项目初始化页面，引导用户完成项目初始化工作"}}
+
+        return {"status": 200, "data": {"message": "项目已完成过初始化配置，可直接进行对话"}}
+
+    @app.post("/api/set_default_mysql", tags=["Initialization"], summary="初始化数据库（不允许用户更改）")
+    def default_mysql(
+            username: str = Body('root', embed=True),
+            password: str = Body('snowball950123', embed=True),
+            hostname: str = Body('db', embed=True),
+            database_name: str = Body('mategen', embed=True)
+    ):
+        from db.thread_model import initialize_database
+        # 尝试初始化数据库
+        if initialize_database(username, password, hostname, database_name):
+            return {"status": 200, "data": {"message": "数据库初始化成功"}}
+        else:
+            raise HTTPException(status_code=500, detail="数据库初始化失败")
+
     # 初始化API，单独做以解决 API_KEY 加密问题
     @app.post("/api/set_api_key", tags=["Initialization"], summary="授权有效的API Key")
     def save_api_key(api_key: str = Body(..., description="API key required for operation", embed=True), ):
         from MateGen.utils import SessionLocal, insert_agent_with_fixed_id
         db_session = SessionLocal()
         try:
+            # 存储用户加密后的 API_KEY, Assis ID 设置为-1来标识，否则会被替换成解密后的API Key
             insert_agent_with_fixed_id(db_session, api_key)
-            return {"status": 200, "data": {"message": "API Key 已生效"}}
+            return {"status": 200, "data": {"message": "您输入的 API Key 已生效"}}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -111,12 +146,35 @@ def mount_app_routes(app: FastAPI):
             global global_instance, global_openai_instance
             global_instance = mate_gen
             global_openai_instance = openai_ins
-
             # 这里根据初始化结果返回相应的信息
             return {"status": 200, "data": {"message": "MateGen 实例初始化成功"}}
         except Exception as e:
-
             raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/knowledge_initialize", tags=["Initialization"],
+              summary="用于开启知识库问答的 MateGen 实例初始化")
+    def initialize_knowledge_mate_gen(
+            knowledge_base_chat: bool = Body(..., description="Enable knowledge base chat"),
+            knowledge_base_name: str = Body(..., description="Name of the knowledge base if chat is enabled"),
+            openai_ins: OpenAI = Depends(get_openai_instance)
+    ):
+
+        global global_instance, global_openai_instance
+        from MateGen.utils import SessionLocal, fetch_latest_api_key
+        db_session = SessionLocal()
+
+        try:
+            api_key = fetch_latest_api_key(db_session)
+
+            mate_gen = get_mate_gen(api_key, None, False, knowledge_base_chat, False, None, knowledge_base_name)
+            global_instance = mate_gen
+            global_openai_instance = openai_ins
+            # 这里根据初始化结果返回相应的信息
+            return {"status": 200, "data": {"message": "MateGen 实例初始化成功", "kb_info": knowledge_base_name}}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+        finally:
+            db_session.close()
 
     # 定义知识库对话（即如果勾选了知识库对话按钮后，重新实例化 MateGen 实例）
     @app.get("/api/reinitialize", tags=["Initialization"],
@@ -130,6 +188,8 @@ def mount_app_routes(app: FastAPI):
         from MateGen.utils import SessionLocal, fetch_latest_api_key, fetch_run_mode_by_thread_id
         db_session = SessionLocal()
 
+        # 根据运行模式，找到是 普通对话还是 知识库对话
+        # 普通对话直接返回线程ID，知识库对话需要额外返回默认的知识库
         run_mode = fetch_run_mode_by_thread_id(db_session, thread_id)
         try:
             api_key = fetch_latest_api_key(db_session)
@@ -141,9 +201,8 @@ def mount_app_routes(app: FastAPI):
                 )
                 global_instance = mate_gen_instance
                 return {"status": 200,
-                        "data": {"message": "MateGen 实例根据指定线程重新初始化成功", "thread_id": thread_id}}
+                        "data": {"message": "当前会话状态的 MateGen 实例重新初始化成功", "thread_id": thread_id}}
             else:
-
                 # 默认选择第一个知识库
                 knowledge_bases = print_and_select_knowledge_base()[-1]["name"]
                 mate_gen_instance = MateGenClass(
@@ -155,33 +214,12 @@ def mount_app_routes(app: FastAPI):
 
                 global_instance = mate_gen_instance
                 return {"status": 200,
-                        "data": {"message": "MateGen 实例根据指定线程重新初始化成功", "thread_id": thread_id,
+                        "data": {"message": "当前会话状态的 MateGen 实例重新初始化成功", "thread_id": thread_id,
                                  "kb_info": {knowledge_bases}}}
-
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
-
-    @app.post("/api/knowledge_initialize", tags=["Initialization"],
-              summary="用于开启知识库问答的 MateGen 实例初始化")
-    def initialize_knowledge_mate_gen(
-            knowledge_base_chat: bool = Body(..., description="Enable knowledge base chat"),
-            knowledge_base_name: str = Body(..., description="Name of the knowledge base if chat is enabled"),
-    ):
-
-        global global_instance, global_openai_instance
-        from MateGen.utils import SessionLocal, fetch_latest_api_key
-        db_session = SessionLocal()
-
-        try:
-            api_key = fetch_latest_api_key(db_session)
-
-            mate_gen = get_mate_gen(api_key, None, False, knowledge_base_chat, False, None, knowledge_base_name)
-            global_instance = mate_gen
-            # 这里根据初始化结果返回相应的信息
-            return {"status": 200, "data": {"message": "MateGen 实例初始化成功", "kb_info": knowledge_base_name}}
-        except Exception as e:
-
-            raise HTTPException(status_code=500, detail=str(e))
+        finally:
+            db_session.close()
 
     @app.post("/api/enhanced_initialize", tags=["Initialization"],
               summary="用于开启增强模式的 MateGen 实例初始化")
@@ -209,12 +247,11 @@ def mount_app_routes(app: FastAPI):
     @app.post("/api/set_knowledge_base_url", tags=["Knowledge"],
               summary="设置本地知识库的根目录")
     def set_base_url(url_data: UrlModel):
-
         # 因为Json会转义 \ , 这里手动进行转换
         corrected_path = url_data.url.replace('\\', '\\\\')
-        if global_instance.set_knowledge_base_url(url_data.url):
+        if global_instance.set_knowledge_base_url(corrected_path):
 
-            return {"status": 200, "data": {"message": f"知识库路径已更新为:{corrected_path}",
+            return {"status": 200, "data": {"message": f"知识库路径已更新为:{url_data.url}",
                                             "knowledge_base_url": url_data.url}}
         else:
             raise HTTPException(status_code=400, detail="无效的知识库地址，正确的路径实例：E:\\work")
@@ -224,18 +261,26 @@ def mount_app_routes(app: FastAPI):
     def create_knowledge_folder(sub_folder_name: str = Body(..., embed=True)):
         try:
             folder_path = create_knowledge_base_folder(sub_folder_name)
-            return {"status": 200, "data": {"folder_path": folder_path}}
+            return {"status": 200, "data": {"message": f"成功设置 {folder_path} 为知识库主目录",
+                                            "folder_path": folder_path}}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
     @app.post("/api/create_knowledge", tags=["Knowledge"],
               summary="新建一个本地知识库，并执行向量化操作")
     def create_knowledge(request: KnowledgeBaseCreateRequest):
-        corrected_path = request.folder_path_base.replace('\\', '\\\\')
+        # corrected_path = request.folder_path_base.replace('\\', '\\\\')
         # 注意： 这里使用 openai 的 实例，而不是 MetaGen的实例
-        vector_id = create_knowledge_base(global_openai_instance, request.knowledge_base_name, corrected_path)
+        # 这里要根据chunking_strategy策略设定RAG的切分策略，默认是自动
+        vector_id = create_knowledge_base(global_openai_instance,
+                                          request.knowledge_base_name,
+                                          # corrected_path,
+                                          request.chunking_strategy,
+                                          request.max_chunk_size_tokens,
+                                          request.chunk_overlap_tokens)
         if vector_id is not None:
-            return {"status": 200, "data": {"vector_id": vector_id}}
+            return {"status": 200, "data": {"message": "已成功完成{}",
+                                            "vector_id": vector_id}}
         else:
             raise HTTPException(status_code=400, detail="知识库无法创建，请再次确认知识库文件夹中存在格式合规的文件")
 
@@ -327,6 +372,8 @@ def mount_app_routes(app: FastAPI):
             return {"status": 200, "data": {"message": data}}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+        finally:
+            db_session.close()
 
     @app.get("/api/messages", tags=["Chat"], summary="根据thread_id获取指定的会话历史信息")
     def get_messages(thread_id: str = Query(..., description="thread_id")):
@@ -363,6 +410,29 @@ def mount_app_routes(app: FastAPI):
             return {"status": 200, "data": {"message": "已更新"}}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+        finally:
+            db_session.close()
+
+    @app.delete("/api/delete_thread", tags=["Chat"], summary="删除指定的会话窗口")
+    def delete_thread(thread_id: str = Body(..., description="需要删除的线程ID", embed=True)):
+        """
+        根据提供的thread_id删除数据库中的线程记录。
+        """
+        from MateGen.utils import SessionLocal, delete_thread_by_id
+
+        db_session = SessionLocal()
+
+        print(f"thread_id: {thread_id}")
+        try:
+            success = delete_thread_by_id(db_session, thread_id)
+            if success:
+                return {"status": 200, "data": {"message": f"Thread {thread_id} 已被删除"}}
+            else:
+                raise HTTPException(status_code=404, detail="未找到指定的线程")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"删除线程时发生错误: {str(e)}")
+        finally:
+            db_session.close()
 
     from db_interface import create_database_connection, DBConfig
     @app.post("/api/create_db_connection", tags=["Database"],
@@ -417,6 +487,8 @@ def mount_app_routes(app: FastAPI):
                 row_str = " | ".join(str(value) for value in row)
                 output.append(row_str)
 
+            db_session.close()
+
             return {"results": output}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"An error occurred while executing SQL: {str(e)}")
@@ -435,26 +507,26 @@ def run_api(host, port, **kwargs):
 
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--host", type=str, default="192.168.110.131")
-    # parser.add_argument("--port", type=int, default=8000)
-    # parser.add_argument("--ssl_keyfile", type=str)
-    # parser.add_argument("--ssl_certfile", type=str)
-    # # 初始化消息
-    # args = parser.parse_args()
-    # args_dict = vars(args)
-    #
-    # app = create_app()
-    #
-    # run_api(host=args.host,
-    #         port=args.port,
-    #         ssl_keyfile=args.ssl_keyfile,
-    #         ssl_certfile=args.ssl_certfile,
-    #         )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", type=str, default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=9000)
+    parser.add_argument("--ssl_keyfile", type=str)
+    parser.add_argument("--ssl_certfile", type=str)
+    # 初始化消息
+    args = parser.parse_args()
+    args_dict = vars(args)
 
     app = create_app()
-    run_api(host="localhost",
-            port=9000,
-            ssl_keyfile=None,
-            ssl_certfile=None,
+
+    run_api(host=args.host,
+            port=args.port,
+            ssl_keyfile=args.ssl_keyfile,
+            ssl_certfile=args.ssl_certfile,
             )
+
+    # app = create_app()
+    # run_api(host="localhost",
+    #         port=9000,
+    #         ssl_keyfile=None,
+    #         ssl_certfile=None,
+    #         )

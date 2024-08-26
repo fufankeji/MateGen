@@ -1684,3 +1684,153 @@ CREATE TABLE threads (
 2024-08-23 14:41:24 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
 2024-08-23 14:41:24 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
 2024-08-23 14:41:24 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 16:05:39 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:05:40 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:05:40 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:05:41 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 16:05:41 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:05:42 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:05:42 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 16:12:40 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:12:41 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:12:41 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:12:41 - root - INFO - 正在创建知识库文件夹
+2024-08-23 16:13:13 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:13:14 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:13:14 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:13:15 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 16:13:15 - root - INFO - 正在创建知识库文件夹
+2024-08-23 16:13:15 - root - INFO - 当前问答知识库文件夹路径：C:\Users\snowb\knowledge_base\muyu_test，请在文件夹中放置知识库文件。
+2024-08-23 16:13:15 - root - INFO - 目前支持PDF、Word、PPT、md等格式读取与检索。
+2024-08-23 16:13:15 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 16:14:04 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:14:05 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:14:05 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:14:05 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:14:06 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:14:06 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 16:14:15 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:14:16 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:14:16 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:14:36 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores "HTTP/1.1 200 OK"
+2024-08-23 16:14:56 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores "HTTP/1.1 200 OK"
+2024-08-23 16:14:56 - root - INFO - 知识库已存在，已启用该知识库
+2024-08-23 16:14:56 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores/vs_Ocx4yKHONGkVfCkxH1eHH9Mw "HTTP/1.1 200 OK"
+2024-08-23 16:14:57 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:14:57 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:14:57 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 16:16:20 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:16:22 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:16:22 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:16:22 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 16:16:22 - root - INFO - 正在创建知识库文件夹
+2024-08-23 16:16:22 - root - INFO - 当前问答知识库文件夹路径：C:\Users\snowb\knowledge_base\muyu_test，请在文件夹中放置知识库文件。
+2024-08-23 16:16:22 - root - INFO - 目前支持PDF、Word、PPT、md等格式读取与检索。
+2024-08-23 16:16:22 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 16:17:11 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:17:13 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:17:13 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:17:27 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores "HTTP/1.1 200 OK"
+2024-08-23 16:17:42 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores "HTTP/1.1 200 OK"
+2024-08-23 16:17:42 - root - INFO - 知识库已存在，已启用该知识库
+2024-08-23 16:17:43 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores/vs_Ocx4yKHONGkVfCkxH1eHH9Mw "HTTP/1.1 200 OK"
+2024-08-23 16:17:43 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:17:43 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:17:43 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 16:59:50 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 16:59:51 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 16:59:51 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 16:59:52 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 16:59:52 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:59:53 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 16:59:53 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 17:07:36 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 17:07:37 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 17:07:37 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 17:07:38 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 17:07:38 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 17:07:39 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 17:07:39 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 17:08:46 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 17:08:47 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 17:08:47 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 17:08:47 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 17:08:48 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 17:08:48 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 17:08:48 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 17:24:55 - root - INFO - 正在创建知识库，请稍后...
+2024-08-23 17:24:55 - root - INFO - 当前知识库的本地路径是：D:\\Work\\knowledge_base\\muyu_test1
+2024-08-23 17:25:56 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 17:25:57 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 17:25:57 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 17:25:58 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 17:25:58 - root - INFO - 正在创建知识库文件夹
+2024-08-23 17:25:58 - root - INFO - 当前问答知识库文件夹路径：D:\Work\knowledge_base\muyu_test1，请在文件夹中放置知识库文件。
+2024-08-23 17:25:58 - root - INFO - 目前支持PDF、Word、PPT、md等格式读取与检索。
+2024-08-23 17:25:58 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 17:26:04 - root - INFO - 正在创建知识库，请稍后...
+2024-08-23 17:26:04 - root - INFO - 当前知识库的本地路径是：D:\\Work\\knowledge_base\\muyu_test1
+2024-08-23 17:30:58 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 17:30:59 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 17:30:59 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 17:30:59 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 17:31:00 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 17:31:00 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 17:31:00 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 17:31:10 - root - INFO - 正在创建知识库，请稍后...
+2024-08-23 17:31:10 - root - INFO - 当前知识库的本地路径是：D:\\Work\\knowledge_base\\muyu_test1
+2024-08-23 17:31:24 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores "HTTP/1.1 200 OK"
+2024-08-23 17:31:24 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores/vs_y6FizMmRYPTdfwJCsvGKXu4o/files "HTTP/1.1 200 OK"
+2024-08-23 17:31:25 - httpx - INFO - HTTP Request: DELETE https://ai.devtool.tech/proxy/v1/vector_stores/vs_y6FizMmRYPTdfwJCsvGKXu4o/files/file-ZuxctycMdx3DEfyrfXMXqstC "HTTP/1.1 200 OK"
+2024-08-23 17:31:25 - httpx - INFO - HTTP Request: DELETE https://ai.devtool.tech/proxy/v1/files/file-ZuxctycMdx3DEfyrfXMXqstC "HTTP/1.1 200 OK"
+2024-08-23 17:31:26 - httpx - INFO - HTTP Request: DELETE https://ai.devtool.tech/proxy/v1/vector_stores/vs_y6FizMmRYPTdfwJCsvGKXu4o/files/file-jHzHO2BP29EbZeXKensPIfOT "HTTP/1.1 200 OK"
+2024-08-23 17:31:26 - httpx - INFO - HTTP Request: DELETE https://ai.devtool.tech/proxy/v1/files/file-jHzHO2BP29EbZeXKensPIfOT "HTTP/1.1 200 OK"
+2024-08-23 17:31:26 - root - INFO - 正在创建知识库的向量存储，请稍后...
+2024-08-23 17:31:29 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/files "HTTP/1.1 200 OK"
+2024-08-23 17:31:30 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/vector_stores/vs_y6FizMmRYPTdfwJCsvGKXu4o/file_batches "HTTP/1.1 200 OK"
+2024-08-23 17:31:30 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores/vs_y6FizMmRYPTdfwJCsvGKXu4o/file_batches/vsfb_1c0d59f3cd744b398d681eb8bcd6e063 "HTTP/1.1 200 OK"
+2024-08-23 17:31:32 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/vector_stores/vs_y6FizMmRYPTdfwJCsvGKXu4o/file_batches/vsfb_1c0d59f3cd744b398d681eb8bcd6e063 "HTTP/1.1 200 OK"
+2024-08-23 17:31:32 - root - INFO - 已更新知识库：muyu_test1的相关描述
+2024-08-23 17:31:32 - root - INFO - 知识库创建完成！
+2024-08-23 18:38:06 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-23 18:38:07 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-23 18:38:07 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-23 18:38:07 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-23 18:38:08 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 18:38:08 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-23 18:38:08 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-23 18:38:12 - root - INFO - 正在创建知识库，请稍后...
+2024-08-23 18:38:12 - root - INFO - 当前知识库的本地路径是：auto
+2024-08-24 20:24:07 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-24 20:24:08 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-24 20:24:08 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-24 20:24:09 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-24 20:24:09 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-24 20:24:10 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-24 20:24:10 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-24 20:24:38 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/messages "HTTP/1.1 200 OK"
+2024-08-24 20:24:38 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs "HTTP/1.1 200 OK"
+2024-08-24 20:24:39 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs/run_dcdU5VUJ3qqilR3kiwPDAdST "HTTP/1.1 200 OK"
+2024-08-24 20:24:41 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs/run_dcdU5VUJ3qqilR3kiwPDAdST "HTTP/1.1 200 OK"
+2024-08-24 20:24:43 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs/run_dcdU5VUJ3qqilR3kiwPDAdST "HTTP/1.1 200 OK"
+2024-08-24 20:24:43 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/messages "HTTP/1.1 200 OK"
+2024-08-24 20:26:54 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/messages "HTTP/1.1 200 OK"
+2024-08-24 20:26:55 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs "HTTP/1.1 200 OK"
+2024-08-24 20:26:55 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs/run_SZDh3SkMBD7PakQmsdPbl5b6 "HTTP/1.1 200 OK"
+2024-08-24 20:26:57 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs/run_SZDh3SkMBD7PakQmsdPbl5b6 "HTTP/1.1 200 OK"
+2024-08-24 20:26:59 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs/run_SZDh3SkMBD7PakQmsdPbl5b6 "HTTP/1.1 200 OK"
+2024-08-24 20:27:01 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/runs/run_SZDh3SkMBD7PakQmsdPbl5b6 "HTTP/1.1 200 OK"
+2024-08-24 20:27:01 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_1hTt0iJK8lzFcXpqanSJQaIz/messages "HTTP/1.1 200 OK"
+2024-08-26 15:01:06 - root - INFO - 正在初始化MateGen，请稍后...
+2024-08-26 15:01:08 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/models "HTTP/1.1 200 OK"
+2024-08-26 15:01:08 - root - INFO - 成功连接服务器，API-KEY通过验证！
+2024-08-26 15:01:08 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads "HTTP/1.1 200 OK"
+2024-08-26 15:01:09 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-26 15:01:09 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/assistants/asst_TzMD4RVBRvPiA358BAXTOLri "HTTP/1.1 200 OK"
+2024-08-26 15:01:09 - root - INFO - 已完成初始化，MateGen可随时调用！
+2024-08-26 15:01:14 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads/thread_mxXBKnL8xcl98D6qzQ2ixyqL/messages "HTTP/1.1 200 OK"
+2024-08-26 15:01:15 - httpx - INFO - HTTP Request: POST https://ai.devtool.tech/proxy/v1/threads/thread_mxXBKnL8xcl98D6qzQ2ixyqL/runs "HTTP/1.1 200 OK"
+2024-08-26 15:01:15 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_mxXBKnL8xcl98D6qzQ2ixyqL/runs/run_SGkyOsfpHI73FWJCkeivagyE "HTTP/1.1 200 OK"
+2024-08-26 15:01:17 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_mxXBKnL8xcl98D6qzQ2ixyqL/runs/run_SGkyOsfpHI73FWJCkeivagyE "HTTP/1.1 200 OK"
+2024-08-26 15:01:18 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_mxXBKnL8xcl98D6qzQ2ixyqL/runs/run_SGkyOsfpHI73FWJCkeivagyE "HTTP/1.1 200 OK"
+2024-08-26 15:01:19 - httpx - INFO - HTTP Request: GET https://ai.devtool.tech/proxy/v1/threads/thread_mxXBKnL8xcl98D6qzQ2ixyqL/messages "HTTP/1.1 200 OK"
