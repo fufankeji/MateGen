@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    image:  snowball1996/mategen:latest # 添加这行来指定镜像名和标签
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    volumes:
+        - .:/app
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_CHARSET: ${MYSQL_CHARSET}
+      MYSQL_COLLATION: ${MYSQL_COLLATION}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  mysql_data:
