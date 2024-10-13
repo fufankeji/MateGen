@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a65a1f38-29eb-4402-ab5f-cb510de3cc1d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="a65a1f38-29eb-4402-ab5f-cb510de3cc1d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,7 +52,7 @@
     "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
     "WebServerToolWindowPanel.toolwindow.show.size": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "E:/02_公司项目/01_MateGen_Pro",
+    "last_opened_file_path": "E:/02_公司项目/02_MateGen_Air",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -66,6 +63,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\02_公司项目\02_MateGen_Air" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\02_project\MateGen\config" />
       <recent name="E:\02_project\MateGen\static" />
@@ -195,6 +195,7 @@
       <workItem from="1724118269674" duration="3000" />
       <workItem from="1724118281476" duration="110496000" />
       <workItem from="1726809615368" duration="1107000" />
+      <workItem from="1726813108081" duration="3784000" />
     </task>
     <servers />
   </component>
